@@ -1,0 +1,70 @@
+<ion-view title="Pubblica" id="page9" class="background-color-body">
+  <ion-nav-title class="title-custom">Pubblica</ion-nav-title>
+  <ion-content class="overflow-scroll has-header has-tabs">
+
+    <div class="item item-divider item-title background-color-list-item-divider" style="border-top-color: transparent;">
+      NOME LISTA<sup>*</sup>
+    </div>
+    <label class="item item-input item-field">
+      <span class="input-label SF-regular" style="color:black">Nome</span>
+      <input type="text" ng-model="list.name">
+    </label>
+
+    <div class="list">
+      <div class="item item-divider item-title background-color-list-item-divider" style="border-top-color: transparent;">
+        <br>
+        DOVE VUOI LA CONSEGNA?<sup>*</sup>
+      </div>
+
+      <ion-item class="item-icon-right " ng-repeat="address in list.delivery_addresses" type="item-text-wrap" ng-click="view_address(address)">
+        <h2>{{address.metadata.formatted_address}}</h2>
+        <p>dalle {{address.metadata.time_from}} &nbsp; alle {{address.metadata.time_to}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+
+      <h5 class="SF-thin center" ng-click="openAddressModal()">AGGIUNGI UN ALTRO INDIRIZZO</h5>
+    </div>
+    <div class="list">
+      <div class="item item-divider item-title background-color-list-item-divider" style="border-top-color: transparent;">
+        MANCIA<sup>*</sup>
+      </div>
+      <label class="item item-input item-field">
+        <span class="input-label SF-regular" style="color:black">Quantità</span>
+        <input type="text" ng-model="list.reward">
+      </label>
+      <!-- DA AGGIUNGERE: Trattabile con toggle a destra -->
+      <div class="item item-divider item-title background-color-list-item-divider">
+        <br>
+        DETTAGLI
+      </div>
+      <label class="item item-input item-field">
+        <span class="input-label SF-regular" style="color:black">Negozio preferito</span>
+        <input type="text" ng-model="list.preferred_shops">
+      </label>
+      <label class="item item-input item-field">
+        <span class="input-label SF-regular" style="color:black">Valore massimo spesa</span>
+        <input type="text" ng-model="list.max_value">
+      </label>
+      <label class="item item-input item-field">
+        <span class="input-label SF-regular" style="color:black">Altri commenti</span>
+        <input type="text" ng-model="list.comments">
+      </label>
+      <div class="item item-divider item-title background-color-list-item-divider">
+        <br>
+        STIME
+      </div>
+      <label class="item item-input item-field">
+        <span class="input-label SF-regular" style="color:black">Peso stimato (kg)</span>
+        <input type="text" ng-model="list.estimated_weight">
+      </label>
+      <label class="item item-input item-field">
+        <span class="input-label SF-regular" style="color:black">Valora spesa stimato</span>
+        <input type="text" ng-model="list.estimated_value">
+      </label>
+    </div>
+    <br>
+    <button class="button button-block button-color SF-regular" ng-click="publicate_list()">
+      Pubblica !
+    </button>
+  </ion-content>
+</ion-view>

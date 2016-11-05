@@ -1,0 +1,11 @@
+{
+  "name": "Feasy App",
+  "short_name": "Feasy App",
+  "start_url": "index.html",
+  "display": "standalone",
+  "icons": [{
+    "src": "feasy512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }]
+}

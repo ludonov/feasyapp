@@ -1,0 +1,41 @@
+<ion-view title="Iscriviti" id="page3" class="background-color-body">
+    <ion-nav-title class="title-custom">Iscriviti</ion-nav-title>
+
+    <ion-content class="overflow-scroll has-header">
+      <br><br>
+      <div class="list SF-regular">
+        <label class="item item-input">
+          <span class="input-label">Nome</span>
+          <input type="text" ng-model="userdata.first_name">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Cognome</span>
+          <input type="text" ng-model="userdata.last_name">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input type="text" ng-model="userdata.email">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Username</span>
+          <input type="text" ng-model="userdata.username">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input type="password" ng-model="userdata.password">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Ripeti Password</span>
+          <input type="password">
+        </label>
+      </div>
+
+      <br><br>
+      <form class="center SF-thin">
+        <input id="cbLegal" type="checkbox"> Accetto i termini e le condizioni<br>
+      </form>
+
+      <button id="btnRegister" class= "button button-block button-color SF-regular"> Crea Account </button>
+
+    </ion-content>
+</ion-view>

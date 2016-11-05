@@ -1,0 +1,49 @@
+<ion-view title="Accedi" id="page1" class="background-color-body">
+  <ion-nav-title class="title-custom">Accedi</ion-nav-title>
+
+  <ion-content class="overflow-scroll has-header background-color-body">
+  <br><br><br>
+    <div class="list" style="margin-bottom:10px">
+      <label class="item item-input">
+        <span class="input-label SF-regular">Email</span>
+        <input type="text" ng-model="userdata.email">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular">Password</span>
+        <input type="text" ng-model="userdata.password">
+      </label>
+    </div>
+
+    <br>
+
+    <div class="SF-regular">
+      <button class="button button-block button-color" id="btnLogin" ng-click="normalSignIn(userdata)"> Accedi </button>
+    </div>
+
+    <p class="center SF-thin">
+      <a ui-sref="RecoverPass">Password dimenticata?</a>
+    </p>
+
+    <br><br>
+    <div class="center">
+      <!--<hr style="width:40%; float:left; noshade:noshade">-->
+      <!--<h5 class="SF-thin">OR</h5>-->
+      <!--<hr style="width:40%; float:right; noshade:noshade">-->
+    </div>
+
+    <p class="or-separator SF-thin">OR<p>
+
+    <br><br>
+
+    <p class="center SF-thin">Non hai ancora un account? Iscriviti!</p>
+
+    <div class="center SF-regular">
+      <button class="button button-block icon ion-social-facebook facebook-sign-in" style="color:white; background-color:#3b5998; text-align:center" ng-click="facebookSignIn()">&nbsp&nbsp&nbspAccedi con Facebook</button>
+    </div>
+    <div class="center SF-regular">
+      <button class="button button-block button-positive icon ion-email" style="color:white; text-align:center" ui-sref="Signup">&nbsp&nbsp&nbspIscriviti con Email</button>
+    </div>
+
+  </ion-content>
+
+</ion-view>

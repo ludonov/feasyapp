@@ -1,0 +1,116 @@
+<ion-view title="Crea account" id="page4" class="background-color-body">
+  <ion-nav-title class="title-custom">Gestisci account</ion-nav-title>
+
+  <ion-content class="overflow-scroll has-header">
+    <div class="center" style="background-color:white">
+      <br>
+      <input type = "image" class="image-circle" src="Images/4_crea_profilo/Daniele.jpg" height="100" width="100" style="background-color:white">
+      <h5 class="SF-thin" style="margin-top:0px; margin-bottom:0px; padding-top:10px; padding-bottom:10px">CARICA IMMAGINE PROFILO</h5>
+    </div>
+
+    <div class="list SF-regular">
+      <div class="item item-divider SF-medium background-color-list-item-divider">
+        <br>
+        INFORMAZIONI PERSONALI
+      </div>
+      <a class="item">
+        Nome
+        <span class="item-note SF-regular profile-element-content">{{user.first_name}}</span>
+      </a>
+      <a class="item">
+        Cognome
+        <span class="item-note SF-regular profile-element-content">{{user.last_name}}</span>
+      </a>
+      <label class="item item-input">
+        <span class="input-label SF-regular" style="color:black">{{user.nationality}}</span>
+        <input type="text" ng-model="user.nationality">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular" style="color:black">{{user.mobile_number}}</span>
+        <input type="text" ng-model="user.mobile_number">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular" style="color:black">{{user.gender}}</span>
+        <input type="text" ng-model="user.gender">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular" style="color:black">{{user.birthday}}</span>
+        <input type="text" ng-model="user.birthday">
+      </label>
+
+      <div class="item item-divider SF-medium background-color-list-item-divider">
+        <br>
+        METODO DI PAGAMENTO
+        <label class="item item-input item-select">
+          <div class="input-label SF-regular" style="color:black">
+            Tipo
+          </div>
+          <select>
+            <option selected>Carta di credito</option>
+            <option>PayPal</option>
+            <option>Jiffy</option>
+          </select>
+        </label>
+        <label class="item item-input item-select">
+          <div class="input-label SF-regular" style="color:black">
+            Marca
+          </div>
+          <select>
+            <option selected>-</option>
+            <option>Visa</option>
+            <option>Mastercard</option>
+            <option>American Express</option>
+          </select>
+        </label>
+        <label class="item item-input">
+          <span class="input-label SF-regular" style="color:black">Numero carta</span>
+          <input type="text">
+        </label>
+        <label class="item item-input">
+          <span class="input-label SF-regular" style="color:black">Scadenza</span>
+          <input type="text">
+        </label>
+        <label class="item item-input">
+          <span class="input-label SF-regular" style="color:black">CVV</span>
+          <input type="text">
+        </label>
+      </div>
+
+      <div class="item item-divider SF-medium background-color-list-item-divider">
+        <br>
+        INDIRIZZI
+      </div>
+      <label class="item item-input">
+        <span class="input-label SF-regular" style="color:black">Nome</span>
+        <input type="text">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular" style="color:black">Nazione</span>
+        <input type="text">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular" style="color:black">Città</span>
+        <input type="text">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular" style="color:black">Via</span>
+        <input type="text">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular" style="color:black">Numero civico</span>
+        <input type="text">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular" style="color:black">CAP</span>
+        <input type="text">
+      </label>
+      <div class="center">
+        <h5 class="SF-thin" href="#">AGGIUNGI UN ALTRO LUOGO</h5>
+      </div>
+    </div>
+
+    <br>
+    <button class= "button button-block button-color SF-regular" ng-click="save_user()">Salva</button>
+
+  </ion-content>
+</ion-view>

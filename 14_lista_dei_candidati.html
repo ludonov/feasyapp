@@ -1,0 +1,22 @@
+<ion-view title="Candidati" id="page14" class="background-color-body">
+    <ion-nav-title class="title-custom">Candidati</ion-nav-title>
+
+  <ion-nav-buttons side="secondary">
+    <button class="button button-small icon-color SF-regular bar-button-color">FILTRA</button>
+  </ion-nav-buttons>
+
+  <ion-content class="overflow-scroll has-header has-tabs">
+    <div class="list">
+
+      <h5 class="SF-thin center" ng-show="list.candidates.length == 0">NESSUN CANDIDATO DISPONIBILE</h5>
+
+      <a class="item item-avatar" ng-repeat="candidate in list.candidates" ng-click="view_candidate_info(candidate)">
+        <img ng-src={{candidate.profile_pic_url}}>
+        <h2 class="SF-regular">{{candidate.first_name}} {{candidate.last_name}}</h2>
+        <p><i class="icon ion-star ion"></i><i class="icon ion-star ion"></i><i class="icon ion-star ion"></i><i class="icon ion-ios-star-half ion"></i><i class="icon ion-ios-star-outline ion"></i></p>
+      </a>
+
+    </div>
+
+  </ion-content>
+</ion-view>

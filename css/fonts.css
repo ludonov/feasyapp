@@ -1,0 +1,75 @@
+﻿
+
+@charset "UTF-8";
+/* CSS Document */
+
+
+/* FONTS */
+
+
+
+@font-face {
+font-family: 'San Francisco Display Ultralight';
+font-style: normal;
+font-weight: normal;
+src: url("Fonts/System_San_Francisco_Display_Ultralight.ttf") format('truetype'), url("Fonts/System_San_Francisco_Display_Ultralight.woff") format('woff');
+}
+
+
+.SF-ultralight {
+    font-family: 'San Francisco Display Ultralight';
+}
+
+
+@font-face {
+font-family: 'San Francisco Display Thin';
+font-style: normal;
+font-weight: normal;
+src: url("Fonts/System_San_Francisco_Display_Thin.ttf") format('truetype'), url("Fonts/System_San_Francisco_Display_Thin.woff") format('woff');
+}
+
+
+.SF-thin {
+    font-family: 'San Francisco Display Thin';
+}
+
+
+@font-face {
+font-family: 'San Francisco Display Regular';
+font-style: normal;
+font-weight: normal;
+src: url("Fonts/System_San_Francisco_Display_Regular.ttf") format('woff'), url("Fonts/System_San_Francisco_Display_Regular.ttf") format('woff');
+}
+
+
+.SF-regular {
+    font-family: 'San Francisco Display Regular';
+}
+
+
+@font-face {
+font-family: 'San Francisco Display Medium';
+font-style: normal;
+font-weight: normal;
+src: url("Fonts/System_San_Francisco_Display_Medium.ttf") format('truetype'), url("Fonts/System_San_Francisco_Display_Medium.woff") format('woff');
+}
+
+
+.SF-medium {
+    font-family: 'San Francisco Display Medium';
+}
+
+
+@font-face {
+font-family: 'San Francisco Display Bold';
+font-style: normal;
+font-weight: normal;
+src: url("Fonts/System_San_Francisco_Display_Bold.ttf") format('truetype'), url("Fonts/System_San_Francisco_Display_Bold.woff") format('woff');
+}
+
+
+.SF-bold {
+    font-family: 'San Francisco Display Bold';
+}
+
+

@@ -1,0 +1,42 @@
+﻿<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Dettagli Indirizzo</h1>
+    <div class="buttons">
+      <button class="button button-positive" ng-click="closeAddressModal()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <label class="item item-input item-field">
+      <span class="input-label SF-regular" style="color:black">Via</span>
+      <input type="text" ng-model="modal_address.metadata.street_name">
+    </label>
+    <label class="item item-input item-field">
+      <span class="input-label SF-regular" style="color:black">Città</span>
+      <input type="text" ng-model="modal_address.metadata.city">
+    </label>
+    <label class="item item-input item-field">
+      <span class="input-label SF-regular" style="color:black">Codice postale (CAP)</span>
+      <input type="text" ng-model="modal_address.metadata.post_code">
+    </label>
+    <label class="item item-input item-field">
+      <span class="input-label SF-regular" style="color:black">Nazione</span>
+      <input type="text" ng-model="modal_address.metadata.nation">
+    </label>
+    <label class="item item-input">
+      <span class="input-label SF-regular" style="color:black">Dalle</span>
+      <input type="text" ng-model="modal_address.metadata.time_from">
+    </label>
+    <label class="item item-input">
+      <span class="input-label SF-regular" style="color:black">Alle</span>
+      <input type="text" ng-model="modal_address.metadata.time_to">
+    </label>
+
+    <button class="button button-block button-color SF-regular" ng-click="save_address()">
+      Salva
+    </button>
+
+    <button class="button button-block button-assertive SF-regular" ng-click="delete_address()" ng-hide="is_new_address()">
+      Elimina
+    </button>
+  </ion-content>
+</ion-modal-view>

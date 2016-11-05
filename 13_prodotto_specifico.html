@@ -1,0 +1,41 @@
+<ion-view title="Prodotto" id="page13" class="background-color-body">
+  <ion-nav-title class="title-custom">Prodotto</ion-nav-title>
+  <ion-content class="overflow-scroll has-header has-tabs">
+    <div class="list">
+      <label class="item item-input">
+        <span class="input-label SF-regular">Prodotto<small><sup>*</sup><small></span>
+        <input type="text" ng-model="product.name">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular">Quantità<small><sup>*</sup><small></span>
+        <input type="text" ng-model="product.qty">
+      </label>
+      <label class="item item-input item-select">
+        <div class="input-label">
+          Unità
+        </div>
+        <select ng-model="product.unit.unit_name" ng-options="x for x in units"></select>
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular">Marca</span>
+        <input type="text" ng-model="product.brand">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular">Fascia di prezzo</span>
+        <input type="text" ng-model="product.price_range">
+      </label>
+      <label class="item item-input">
+        <span class="input-label SF-regular">Altri dettagli</span>
+        <input type="text" ng-model="product.other">
+      </label>
+    </div>
+
+    <button class="button button-block button-positive SF-regular" ng-click="save_product()">
+      Salva
+    </button>
+
+    <button class="button button-block button-assertive SF-regular" ng-click="delete_product()" ng-hide="is_new_product()">
+      Elimina
+    </button>
+  </ion-content>
+</ion-view>

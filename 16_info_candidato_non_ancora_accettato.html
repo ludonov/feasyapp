@@ -1,0 +1,68 @@
+<ion-view title="Dettagli candidato" id="page16" class="background-color-body">
+    <ion-nav-title class="title-custom">Dettagli candidato</ion-nav-title>
+
+    <ion-content class="overflow-scroll has-header has-tabs">
+
+      <div class="center">
+        <h3 class = "profile-personal-info" style="padding-top:10px; color:black">{{candidate.first_name}} {{candidate.last_name}}</h3>
+        <img id="profile_image" class="image-circle" src="{{candidate.profile_pic_url}}" height="100" width="100" onerror="this.src=get_unknown_man_pic()">
+        <h4 class = "profile-personal-info">Valutazione: <i class="icon ion-star ion"></i><i class="icon ion-star ion"></i><i class="icon ion-star ion"></i><i class="icon ion-ios-star-half ion"></i><i class="icon ion-ios-star-outline ion"></i></h4>
+        <h4 class = "profile-personal-info">Iscritto dal: <font class="profile-personal-info">03/01/2016</font></h4>
+        <h4 class = "profile-personal-info">Commissioni fatte: <font class="profile-personal-info">{{candidate.accepted_tasks}}</font></h4>
+        <h4 class = "profile-personal-info" style="margin-top:0px; margin-bottom:0px; padding-bottom:10px">Commissioni ricevute: <font class="profile-personal-info">{{candidate.requested_tasks}}</font></h4>
+      </div>
+
+      <div class="list card">
+
+        <a class="item item-icon-left" ng-click="view_candidate_profile()">
+          <i class="icon ion-person SF-regular" style="color:#8e8f92"></i>
+          Visita profilo completo
+        </a>
+
+      </div>
+
+      <div class="list SF-regular">
+        <div class="item item-divider item-title background-color-list-item-divider" style="border-top-color: transparent;">
+          DETTAGLI CONSEGNA
+        </div>
+        <a class="item item-field">
+          Dove
+          <span class="item-note item-content profile-element-content">Corso Re Umberto 48</span>
+        </a>
+        <a class="item item-field">
+          Dalle
+          <span class="item-note item-content profile-element-content">18.00</span>
+        </a>
+        <a class="item item-field">
+          Alle
+          <span class="item-note item-content profile-element-content">19.00</span>
+        </a>
+        <div class="item item-divider item-title background-color-list-item-divider">
+          <br>
+          CONDIZIONI
+        </div>
+        <a class="item item-field">
+          Mancia
+          <span class="item-note item-content profile-element-content">{{candidate.conditions_reward}}</span>
+        </a>
+        <a class="item item-field">
+          Peso
+          <span class="item-note item-content profile-element-content">{{candidate.conditions_weight}}</span>
+        </a>
+        <a class="item item-field">
+          Negozio
+          <span class="item-note item-content profile-element-content">{{candidate.conditions_shops}}</span>
+        </a>
+        <a class="item item-field">
+          Tetto massimo
+          <span class="item-note item-content profile-element-content">{{candidate.conditions_max_value}}</span>
+        </a>
+
+      </div>
+      <br>
+      <button class="button button-block button-color SF-regular" ng-click="accept_candidate()">
+        Accetta
+      </button>
+
+    </ion-content>
+</ion-view>

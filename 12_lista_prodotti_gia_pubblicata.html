@@ -1,0 +1,12 @@
+<ion-view title="Prodotti" id="page12" class="background-color-body">
+    <ion-nav-title class="title-custom">Prodotti</ion-nav-title>
+
+  <ion-content class="overflow-scroll has-header has-tabs">
+    <div class = "list">
+      <a class="item item-field" ng-repeat="product in list.items" ng-click="view_product_details(product)">
+        {{product.name}}
+        <span class="item-note item-content">{{product.qty}} {{product.unit.unit_name}}</span>
+      </a>
+    </div>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,44 @@
+<ion-view title="Nuovo elemento" id="page8" class="background-color-body">
+    <ion-nav-title class="title-custom">Nuovo elemento</ion-nav-title>
+
+  <ion-content class="overflow-scroll has-header has-tabs" class="background-color-body">
+    <br><br>
+    <div class="list SF-regular">
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label SF-regular">Prodotto<small><sup>*</sup><small></span>
+          <input type="text" ng-model="product.name">
+        </label>
+        <label class="item item-input">
+          <span class="input-label SF-regular">Quantità<small><sup>*</sup><small></span>
+          <input type="text"  ng-model="product.qty">
+        </label>
+
+        <label class="item item-input item-select">
+          <div class="input-label">
+            Unità
+          </div>
+          <select ng-model="unitname.name" ng-options="x for x in units">
+          </select>
+        </label>
+
+        <label class="item item-input">
+          <span class="input-label SF-regular">Marca</span>
+          <input type="text" ng-model="product.brand">
+        </label>
+        <label class="item item-input">
+          <span class="input-label SF-regular">Fascia di prezzo</span>
+          <input type="text" ng-model="product.price_range">
+        </label>
+        <label class="item item-input">
+          <span class="input-label SF-regular">Altri dettagli</span>
+          <input type="text" ng-model="product.other">
+        </label>
+      </div>
+    </div>
+    <br>
+    <button class="button button-block button-color SF-regular" ng-click="save()">
+      Aggiungi
+    </button>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,58 @@
+<ion-view title="Nome Lista" id="page11" class="background-color-body">
+    <ion-nav-title class="title-custom">{{list.name}}</ion-nav-title>
+
+    <ion-content class="overflow-scroll has-header has-tabs">
+      <h4 class="center SF-regular">STATUS: CONFERMATA</h4>
+
+      <div class="card">
+        <div class="item item-divider SF-medium">
+          Spesario
+        </div>
+        <div class="item item-text-wrap SF-regular">
+          <a class="item item-avatar" ui-sref="#">
+            <img src="Images/11_lista_pubblicata_con_spesario/Daniele.jpg">
+            <h2>{{list.chosen_candidate.first_name}} {{list.chosen_candidate.last_name}}</h2>
+            <p>Commissioni fatte: 24<br>Commissioni Ricevute: 36</p>
+          </a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="item item-divider SF-regular">
+          Consegna
+        </div>
+        <div class="item item-text-wrap SF-thin">
+          Luogo:
+        </div>
+        <div class="item item-text-wrap SF-thin">
+          Dalle:
+        </div>
+        <div class="item item-text-wrap SF-thin">
+          Alle:
+        </div>
+      </div>
+
+      <div class="list card">
+
+        <a class="item item-icon-left" ui-sref="Chat">
+          <i class="icon ion-ios-chatbubble-outline SF-regular"></i>
+          Chat
+        </a>
+
+        <a class="item item-icon-left" ui-sref="PublicatedListDetails">
+          <i class="icon ion-navicon SF-regular"></i>
+          Dettagli
+        </a>
+
+        <a class="item item-icon-left" ui-sref="ProductsPublicatedList">
+          <i class="icon ion-locked SF-regular"></i>
+          Prodotti
+        </a>
+
+      </div>
+      <br>
+      <button class="button button-block button-color SF-regular">
+        PAGA
+      </button>
+    </ion-content>
+
+</ion-view>

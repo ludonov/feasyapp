@@ -1,0 +1,33 @@
+<ion-view title="Nome lista - nome persona" id="page20" class="background-color-body">
+    <ion-nav-title class="title-custom">Nome lista - nome persona</ion-nav-title>
+
+
+  <ion-content class="overflow-scroll has-header"> <!-- class="content-stable" on-swipe-left="hideTime = false" on-swipe-right="hideTime = true" -->
+
+    <!--
+    <div ng-repeat="message in messages"
+         ng-class="{other: message.userId != myId}"
+         class="messages">
+
+      <div class="message" ng-class="{'slide-right': hideTime, '': !hideTime}">
+        <span>{{ message.text }}</span>
+      </div>
+
+      <div class="time" ng-class="{'slide-right': hideTime, '': !hideTime}">{{message.time}}</div>
+
+
+    </div>
+    -->
+  </ion-content>
+
+
+  <div keyboard-attach class="bar bar-footer bar-stable item-input-inset">
+    <label class="item-input-wrapper">
+      <input type="text" placeholder="Type your message" on-return="sendMessage(); closeKeyboard()" ng-model="data.message" on-focus="inputUp()" on-blur="inputDown()" />
+    </label>
+    <button class="button button-clear SF-thin" ng-click="sendMessage()">
+      Send
+    </button>
+  </div>
+
+</ion-view>

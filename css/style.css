@@ -1,0 +1,295 @@
+
+/* Empty. Add your own CSS if you like */
+
+@charset "UTF-8";
+/* CSS Document */
+
+.center{
+	text-align: center; 	/* accentra elemento orizzontalmente rispetto alla pagina */
+}
+
+.colore{
+  background-color: #387ef5;
+  color: black;
+}
+
+.bottom{
+	bottom: 0;
+	position: absolute;
+  margin: 0 auto;
+}
+
+/* gli hyperlink sono sempre neri e senza sottolineatura*/
+
+a:link {
+	color: black;
+	text-decoration: none;
+}
+
+a:active {
+	color: black;
+	text-decoration: none;
+}
+
+a:visited {
+	color: black;
+	text-decoration: none;
+}
+
+a:hover {
+	color: black;
+	text-decoration: none;
+}
+
+
+/*per avere i button-block centrati e non larghi come tutto lo schermo*/
+
+button.button-block,
+input.button.button-block {
+    width: 95%;
+    margin: auto;
+}
+
+
+.down {
+   display: block;
+   margin-top: 44px 0;
+}
+
+
+
+/* Posizionamento su una pagina */
+
+.center-vertically-item-50 {
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    position: absolute !important;
+    margin:0 auto;
+    width:100%;
+}
+
+.center-vertically-item-23 {
+    top: 23%;
+    -webkit-transform: translateY(-23%);
+    -moz-transform: translateY(-23%);
+    -ms-transform: translateY(-23%);
+    -o-transform: translateY(-23%);
+    transform: translateY(-23%);
+    position: absolute !important;
+    margin:0 auto;
+    width:100%;
+}
+
+.center-vertically-item-25 {
+    top: 25%;
+    -webkit-transform: translateY(-25%);
+    -moz-transform: translateY(-25%);
+    -ms-transform: translateY(-25%);
+    -o-transform: translateY(-25%);
+    transform: translateY(-25%);
+    position: absolute !important;
+    margin:0 auto;
+    width:100%;
+}
+
+.center-vertically-item-43 {
+    top: 43%;
+    -webkit-transform: translateY(-43%);
+    -moz-transform: translateY(-43%);
+    -ms-transform: translateY(-43%);
+    -o-transform: translateY(-43%);
+    transform: translateY(-43%);
+    position: absolute !important;
+    margin:0 auto;
+    width:100%;
+}
+
+.center-vertically-item-57 {
+    top: 57%;
+    -webkit-transform: translateY(-57%);
+    -moz-transform: translateY(-57%);
+    -ms-transform: translateY(-57%);
+    -o-transform: translateY(-57%);
+    transform: translateY(-57%);
+    position: absolute !important;
+    margin:0 auto;
+    width:100%;
+}
+
+.center-vertically-item-70 {
+    top: 70%;
+    -webkit-transform: translateY(-70%);
+    -moz-transform: translateY(-70%);
+    -ms-transform: translateY(-70%);
+    -o-transform: translateY(-70%);
+    transform: translateY(-70%);
+    position: absolute !important;
+    margin:0 auto;
+    width:100%;
+}
+
+.center-vertically-item-80 {
+    top: 80%;
+    -webkit-transform: translateY(-80%);
+    -moz-transform: translateY(-80%);
+    -ms-transform: translateY(-80%);
+    -o-transform: translateY(-80%);
+    transform: translateY(-80%);
+    position: absolute !important;
+    margin:0 auto;
+    width:100%;
+}
+
+.center-vertically-item-90 {
+    top: 90%;
+    -webkit-transform: translateY(-90%);
+    -moz-transform: translateY(-90%);
+    -ms-transform: translateY(-90%);
+    -o-transform: translateY(-90%);
+    transform: translateY(-90%);
+    position: absolute !important;
+    margin:0 auto;
+    width:100%;
+}
+
+.white{
+  color: #fff;}
+
+/*Style header buttons*/
+.button.icon-color{
+  color: white; /*#fff;*/
+  background-color: #387ef5; }
+
+.image-circle {
+    border-radius: 50%;
+}
+
+.center-map {
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page-top {
+top: 0;
+position: absolute;
+  margin: 0 auto;
+}
+
+.profile-element-content {
+  /*Da aggiungere un allineamento wrt il lato sinistro del content, di 35% da destra che non sono capace a farlo*/
+  font-size:100%;
+  font:SF-regular;
+}
+
+.home-button {
+    height: 100px;
+    width: 100px;
+    background-color: white;
+    border: 2px solid positive;
+}
+
+.background-color-body {
+  background-color: #efeef4;
+}
+
+.background-color-footer-tab {
+  background-color: #f5f5f5;
+}
+
+.background-color-list-item-divider {
+  background-color: #efeef4;
+}
+
+.item-title { /*Titolo in stampatello tra gli items*/
+  font-family: 'San Francisco Display Regular';
+  color: #6d6d72;
+
+}
+
+.item-field { /*Il campo dell'item, la parte scritta a sinistra*/
+  font-family: 'San Francisco Display Regular';
+}
+
+.item-content { /*Il contenuto dell'item, la parte scritta a destra*/
+  font-family: 'San Francisco Display Regular';
+  color:#8e8f92;
+  font-size:100%;
+}
+
+.profile-personal-info {
+  font-family: 'San Francisco Display Regular';
+  color:#1c1c1c; /*#1c1c1c*/
+}
+
+/*For lineORline in login page*/
+.or-separator {
+    overflow: hidden;
+    text-align: center;
+}
+.or-separator:before,
+.or-separator:after {
+    background-color: #6d6d72;
+    content: "";
+    display: inline-block;
+    height: 1px;
+    position: relative;
+    vertical-align: middle;
+    width: 40%;
+}
+.or-separator:before {
+    right: 0.5em;
+    margin-left: -50%;
+}
+.or-separator:after {
+    left: 0.5em;
+    margin-right: -50%;
+}
+
+/*Class to change style of header*/
+.title-custom {
+    font-family: 'San Francisco Display Medium';
+    color:white;  /*MediumBlue #0000CD*/ /*RoyalBlue #4169E1*/ /*BlueIonic #3b88f2;*/
+}
+
+.bar.bar-color{
+  border-color: transparent; /*#0c60ee;*/
+  background-color: #3367d6; /*Blu scuro preso da google developer*/
+  background-image: linear-gradient(0deg, #0c60ee, #0c60ee 50%, transparent 50%);
+  color: #fff; }
+
+/*Class to change BAR button colors*/
+.button.bar-button-color {
+  border-color: transparent;
+  background-color:#3367d6;
+  color: #fff; }
+
+/*Class to change BODY button colors*/
+.button.button-color {
+  border-color: transparent;
+  background-color:#387ef5;
+  color: #fff; }
+
+/*Class to change color of sub-tabs in page 18A*/
+.tabs-striped.tabs-background-color .tabs {
+  background-color: #3367d6;
+  background-image: none; }
+
+/*For map*/
+.scroll {
+    height: 100%;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+
+
+
+
