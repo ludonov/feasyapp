@@ -1,12 +1,46 @@
-<ion-view title="Loading" id="page0">
-    <ion-nav-title class="title-custom">Loading</ion-nav-title>
+<ion-view title="Loading" id="page0" class="init_loading">
+  <ion-nav-title class="title-custom">Feasy</ion-nav-title>
+  <ion-content class="overflow-scroll has-header" style="background:#3367d6">
 
-  <ion-content class="overflow-scroll has-header">
+    <div class="row row-center">
+      <div class="col">
 
-    <div class = "center center-vertically-item-50">
-      <img src="Images/0_loading/logo.jpg" width = "80">
+        <b><h3 class="SF-thin center" style="color:white; font-weight:bold">LOADING</h3></b>
+
+        <div id="splashAnim" class="text-center">
+          <div class="splashContainer">
+            <div class="splashContent">
+              <div id="splashContainer">
+                <svg id="splashSvg" viewBox="0 0 400 200">
+                  <defs>
+                    <filter id="goo">
+                      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur" />
+                      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 17 -7" result="cm" />
+                      <feComposite in="SourceGraphic" in2="cm" />
+                    </filter>
+                    <filter id="f2" x="-200%" y="-40%" width="400%" height="200%">
+                      <feOffset in="SourceAlpha" dx="9" dy="3" />
+                      <feGaussianBlur result="blurOut" in="offOut" stdDeviation="0.51" />
+                      <feComponentTransfer>
+                        <feFuncA type="linear" slope="0.05" />
+                      </feComponentTransfer>
+                      <feMerge>
+                        <feMergeNode />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <g filter="url(#goo)" style="fill:#FFFFFF">
+                    <ellipse id="drop" cx="125" cy="90" rx="20" ry="20" fill-opacity="1" fill="#ededed" />
+                    <ellipse id="drop2" cx="125" cy="90" rx="20" ry="20" fill-opacity="1" fill="#ededed" />
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </ion-content>
-
 </ion-view>

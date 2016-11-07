@@ -1,4 +1,4 @@
-
+﻿
 /* Empty. Add your own CSS if you like */
 
 @charset "UTF-8";
@@ -280,8 +280,19 @@ position: absolute;
   background-image: none; }
 
 /*For map*/
-.scroll {
+.row, .scroll {
     height: 100%;
+}
+
+.init_loading .scroll-content {
+  display: table !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+.init_loading .scroll {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
 }
 
 #map {

@@ -10,9 +10,15 @@ angular.module('app.routes', [])
 
 
 		.state('tabsController', {
-			url: '/Menu',
-			abstract:true,
-			templateUrl: 'templates/tabsController.html'
+		  url: '/Menu',
+		  abstract: true,
+		  templateUrl: 'templates/tabsController.html'
+		})
+
+		.state('Startup', {
+		  url: '/Startup',
+		  templateUrl: '0_loading.html',
+      controller: 'StartupCtrl'
 		})
 
 
@@ -190,7 +196,7 @@ angular.module('app.routes', [])
 
     .state('UserProfile', {
 
-      url: '/UserProfile',
+      url: '/Home/UserProfile',
       templateUrl: '17A_profilo_utente.html',
       controller: 'UserProfileCtrl'
 
@@ -266,7 +272,7 @@ angular.module('app.routes', [])
 
     .state('Settings', {
 
-      url: '/Settings',
+      url: '/Home/Settings',
       templateUrl: '23_impostazioni.html',
       controller: 'SettingsCtrl'
 
@@ -304,6 +310,6 @@ angular.module('app.routes', [])
 
     });
 
-  $urlRouterProvider.otherwise('/Login');
+  $urlRouterProvider.otherwise('/Startup');
 
 });

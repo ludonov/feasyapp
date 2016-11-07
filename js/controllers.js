@@ -1,13 +1,54 @@
 angular.module('app.controllers', [])
 
-  .controller('LoginCtrl', function ($scope, $rootScope,  $state, $ionicPopup, $ionicHistory, $q, UserService, DataExchange, $ionicLoading, $cordovaFileTransfer, $cordovaFile) {
+  .config(function ($ionicConfigProvider) {
+    $ionicConfigProvider.form.checkbox("circle");
+    $ionicConfigProvider.form.toggle("large");
+    $ionicConfigProvider.tabs.style("standard");
+    $ionicConfigProvider.tabs.position("bottom");
+    $ionicConfigProvider.navBar.alignTitle("center");
+    $ionicConfigProvider.navBar.positionPrimaryButtons("left");
+    $ionicConfigProvider.navBar.positionSecondaryButtons("right");
+  })
+
+  .controller('StartupCtrl', function ($scope, $ionicPlatform, $rootScope,  $state, $timeout, $ionicPopup, $ionicHistory, $q, UserService, DataExchange, $ionicLoading, $cordovaFileTransfer, $cordovaFile) {
+
+    $scope.logo = { src: 'images/logo.png' };
 
     ionic_Popup = $ionicPopup;
     root_scope = $rootScope;
 
-    $ionicLoading.show({
-      template: 'Please wait...'
-    });
+
+    $scope.check_login = function () {
+
+      
+      current_user = UserService.getUser();
+
+      if (current_user.objectId != undefined) {
+        $ionicHistory.nextViewOptions({
+          disableBack: true,
+          historyRoot: true
+        });
+        $state.go('tabsController.Home');
+      } else {
+        $ionicHistory.nextViewOptions({
+          disableBack: true,
+          historyRoot: true
+        });
+        $state.go('Login');
+      }
+    }
+
+    start_splash();
+
+    $timeout(function () {
+      navigator.splashscreen.hide();
+      $timeout($scope.check_login, 3500);
+    }, 500);
+
+  })
+
+
+  .controller('LoginCtrl', function ($scope, $rootScope,  $state, $ionicPopup, $ionicHistory, $q, UserService, DataExchange, $ionicLoading, $cordovaFileTransfer, $cordovaFile) {
 
     $scope.userdata = {
       email: "info@feasyapp.com",
@@ -202,18 +243,6 @@ angular.module('app.controllers', [])
       });
     };
 
-    $scope.check_login = function () {
-      current_user = UserService.getUser();
-      $ionicLoading.hide();
-      if (current_user.objectId != undefined) {
-        $ionicHistory.nextViewOptions({
-          disableBack: true,
-          historyRoot: true
-        });
-        $state.go('tabsController.Home');
-      }
-    }
-
     $scope.normalSignIn = function (user) {
       try {
 
@@ -279,7 +308,6 @@ angular.module('app.controllers', [])
 
     //document.getElementById("btnLogin").addEventListener("click", $scope.normalSignIn, false);
 
-    $scope.check_login();
 
   })
 
@@ -412,6 +440,14 @@ angular.module('app.controllers', [])
 
     $scope.goto_find_lists = function () {
       $state.go("tabsController.FindListOnMap");
+    }
+
+    $scope.goto_userprofile = function () {
+      $state.go("UserProfile");
+    }
+
+    $scope.goto_settings = function () {
+      $state.go("Settings");
     }
 
   })
