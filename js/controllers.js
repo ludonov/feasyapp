@@ -238,7 +238,7 @@ angular.module('app.controllers', [])
           //   location: "currentlocation"
           // };
 
-          current_user = UserStorage.findById(Backendless.UserService.login(user.email, user.password).objectId);
+          current_user = UserStorage().findById(Backendless.UserService.login(user.email, user.password).objectId);
         }
 
         current_user.password = user.password;
@@ -296,7 +296,7 @@ angular.module('app.controllers', [])
     function userRegistered(user) {
       try  {
         console.log("user has been registered");
-        current_user = UserStorage.findById(Backendless.UserService.login($scope.userdata.email, $scope.userdata.password).objectId);
+        current_user = UserStorage().findById(Backendless.UserService.login($scope.userdata.email, $scope.userdata.password).objectId);
         $ionicLoading.hide();
         $ionicHistory.nextViewOptions({
           disableBack: true,
@@ -482,7 +482,7 @@ angular.module('app.controllers', [])
         var temp_usr = angular.copy(current_user);
         temp_usr.lists.push(list);
         var temp_usr = backendlessify_user(temp_usr);
-        UserStorage.save(temp_usr, new Backendless.Async(userUpdated, onError));
+        UserStorage().save(temp_usr, new Backendless.Async(userUpdated, onError));
       });
 
       onError = function (err) {
@@ -580,7 +580,7 @@ angular.module('app.controllers', [])
 
     listRemoved = function (removed_list) {
       console.log("list removed");
-      current_user.lists = ShoppingListStorage.find().data;
+      current_user.lists = ShoppingListStorage().find().data;
       $rootScope.lists = current_user.lists;
       $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
       $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
@@ -714,20 +714,24 @@ angular.module('app.controllers', [])
       $ionicHistory.goBack(-2);
     }
 
-    $scope.close_addr_modal =  function (result) {
-      $scope.modal_address.latitude = result.geometry.location.lat;
-      $scope.modal_address.longitude = result.geometry.location.lng;
+    var update_list_from_google = function (result) {
+      $scope.modal_address.latitude = result.geometry.location.lat();
+      $scope.modal_address.longitude = result.geometry.location.lng();
       $scope.modal_address.metadata.formatted_address = result.formatted_address;
-			for (var j = 0; j<result.address_components.length; j++) {
-				if (result.address_components[j].types[0] == "route")
-					$scope.modal_address.metadata.street_name = result.address_components[j].short_name;
-				else if (result.address_components[j].types[0] == "locality")
-					$scope.modal_address.metadata.city = result.address_components[j].short_name;
-				else if (result.address_components[j].types[0] == "country")
-					$scope.modal_address.metadata.nation = result.address_components[j].long_name;
-				else if (result.address_components[j].types[0] == "postal_code")
-					$scope.modal_address.metadata.post_code = result.address_components[j].short_name;
-			}
+      for (var j = 0; j < result.address_components.length; j++) {
+        if (result.address_components[j].types[0] == "route")
+          $scope.modal_address.metadata.street_name = result.address_components[j].short_name;
+        else if (result.address_components[j].types[0] == "locality")
+          $scope.modal_address.metadata.city = result.address_components[j].short_name;
+        else if (result.address_components[j].types[0] == "country")
+          $scope.modal_address.metadata.nation = result.address_components[j].long_name;
+        else if (result.address_components[j].types[0] == "postal_code")
+          $scope.modal_address.metadata.post_code = result.address_components[j].short_name;
+      }
+    }
+
+    $scope.close_addr_modal =  function (result) {
+      update_list_from_google(result);
       if (arrayObjectIndexOf($rootScope.list.delivery_addresses, $scope.modal_address.metadata, "metadata") == -1) {
         add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
       }
@@ -761,20 +765,7 @@ angular.module('app.controllers', [])
 
             confirmPopup.then(function(res) {
               if(res) {
-                $scope.modal_address.latitude = data.results[0].geometry.location.lat;
-                $scope.modal_address.longitude = data.results[0].geometry.location.lng;
-                $scope.modal_address.metadata.formatted_address = data.results[0].formatted_address;
-								for (var j = 0; j<data.results[0].address_components.length; j++) {
-									if (data.results[0].address_components[j].types[0] == "route")
-										$scope.modal_address.metadata.street_name = data.results[0].address_components[j].short_name;
-									else if (data.results[0].address_components[j].types[0] == "locality")
-										$scope.modal_address.metadata.city = data.results[0].address_components[j].short_name;
-									else if (data.results[0].address_components[j].types[0] == "country")
-										$scope.modal_address.metadata.nation = data.results[0].address_components[j].long_name;
-									else if (data.results[0].address_components[j].types[0] == "postal_code")
-										$scope.modal_address.metadata.post_code = data.results[0].address_components[j].short_name;
-								}
-
+                update_list_from_google(data.results[0]);
                 if (arrayObjectIndexOf($rootScope.list.delivery_addresses, $scope.modal_address.metadata, "metadata") == -1) {
                   add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
                 }
@@ -782,10 +773,7 @@ angular.module('app.controllers', [])
               }
             });
           } else {
-            $scope.modal_address.latitude = data.results[0].geometry.location.lat;
-            $scope.modal_address.longitude = data.results[0].geometry.location.lng;
-            $scope.modal_address.metadata.formatted_address = data.results[0].formatted_address;
-
+            update_list_from_google(data.results[0]);
             if (arrayObjectIndexOf($rootScope.list.delivery_addresses, $scope.modal_address.metadata, "metadata") == -1) {
               add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
             }
@@ -923,7 +911,7 @@ angular.module('app.controllers', [])
     itemRemoved = function (item_removed) {
       $ionicLoading.hide();
       console.log("item removed");
-      $rootScope.list = backendlessify_shopping_list(ShoppingListStorage.findById($rootScope.list_id));
+      $rootScope.list = backendlessify_shopping_list(ShoppingListStorage().findById($rootScope.list_id));
       $rootScope.lists[$rootScope.list_idx] = $rootScope.list;
       $rootScope.$apply();
       $ionicHistory.goBack();
@@ -1107,7 +1095,7 @@ angular.module('app.controllers', [])
       showBackdrop: false
     });
 
-    var definitive_err = function () {
+    var definitive_err = function (err) {
       $ionicLoading.hide();
       $ionicPopup.alert({
         title: "Info",
@@ -1118,20 +1106,22 @@ angular.module('app.controllers', [])
 
     var position_err = function () {
       get_ip_data_and_position(function (data) {
-        geodecode_address(data.city, function (geodata) {
-          $ionicLoading.hide();
-          //if (data == null || data.loc == null) {
-          //  definitive_err();
-          //  return;
-          //}
-          //var parts = data.loc.split(",");
-          //if (parts.length != 2) {
-          //  definitive_err();
-          //  return;
-          //}
-          create_map(geodata.results[0].geometry.location.lat, geodata.results[0].geometry.location.lng);
-        });
-      });
+        if (data == null) {
+          definitive_err();
+        } else {
+          if (data.lat == null || data.lon == null) {
+            if (data.city == null) {
+              definitive_err();
+            } else {
+              geodecode_address(data.city, function (geodata) {
+                create_map(geodata.results[0].geometry.location.lat(), geodata.results[0].geometry.location.lng());
+              }, definitive_err);
+            }
+          } else {
+            create_map(data.lat, data.lon);
+          }
+        }
+      }, definitive_err);
     }
 
     var create_map = function (lat, long) {
@@ -1170,17 +1160,21 @@ angular.module('app.controllers', [])
       });
     }
 
-    //if (cordova.plugins != null && cordova.plugins.diagnostic != null) {
-    //  cordova.plugins.diagnostic.isLocationAvailable(function () {
-    //    navigator.geolocation.getCurrentPosition(function (position) {
+    if (cordova.plugins != null && cordova.plugins.diagnostic != null) {
+      cordova.plugins.diagnostic.isLocationEnabled(function (enabled) {
+        if (enabled) {
+          navigator.geolocation.getCurrentPosition(function (position) {
 
-    //      create_map(position.coords.latitude, position.coords.longitude);
+            create_map(position.coords.latitude, position.coords.longitude);
 
-    //    }, function (err) {
-    //      position_err();
-    //    });
-    //  }, position_err);
-    //} else {
+          }, function (err) {
+            position_err();
+          }, { timeout: 5000, enableHighAccuracy: true });
+        } else {
+          position_err();
+        }
+      }, position_err);
+    } else {
 
 
       navigator.geolocation.getCurrentPosition(function (position) {
@@ -1191,7 +1185,7 @@ angular.module('app.controllers', [])
         position_err();
       });
 
-    //}
+    }
 
 
   })
@@ -1247,7 +1241,7 @@ angular.module('app.controllers', [])
       });
 
       var temp_usr = backendlessify_user($scope.user);
-      UserStorage.save(temp_usr, new Backendless.Async(userUpdated, onError));
+      UserStorage().save(temp_usr, new Backendless.Async(userUpdated, onError));
     }
 
     onError = function (err) {
@@ -1283,12 +1277,12 @@ angular.module('app.controllers', [])
 
   })
 
-var UserStorage = Backendless.Persistence.of(Backendless.User);
-var AddressInfoStorage = Backendless.Persistence.of(window.Classes.AddressInfo);
-var PaymentInfoStorage = Backendless.Persistence.of(window.Classes.PaymentInfo);
-var ShoppingListStorage = Backendless.Persistence.of(window.Classes.ShoppingList);
-var ShoppingItemStorage = Backendless.Persistence.of(window.Classes.ShoppingItem);
-var MeasureUnitsStorage = Backendless.Persistence.of(window.Classes.MeasureUnits);
+var UserStorage         = function () { return Backendless.Persistence.of(Backendless.User) };
+var AddressInfoStorage  = function () { return Backendless.Persistence.of(window.Classes.AddressInfo) };
+var PaymentInfoStorage  = function () { return Backendless.Persistence.of(window.Classes.PaymentInfo) };
+var ShoppingListStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingList) };
+var ShoppingItemStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingItem) };
+var MeasureUnitsStorage = function () { return Backendless.Persistence.of(window.Classes.MeasureUnits) };
 
 
 var ionic_Popup;

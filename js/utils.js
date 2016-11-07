@@ -302,11 +302,11 @@ function get_current_city(callback) {
 }
 
 function get_ip_data_and_position(callback, err) {
-  $.getJSON('http://ipinfo.io', function (data) {
+  $.getJSON('http://ip-api.com/json', function (data) {
     callback(data);
-  }).fail(function () {
-    console.log("get_ip_data_and_position error");
-    err();
+  }).fail(function (jqXHR, textStatus, errorThrown) {
+    console.log("get_ip_data_and_position error: " + textStatus);
+    if (err != null) err("get_ip_data_and_position error: " + textStatus, jqXHR, errorThrown);
   });
 }
 
@@ -319,18 +319,23 @@ function geodecode_address(address, callback, err) {
     try {
       if (status === google.maps.GeocoderStatus.OK) {
         if (results.length == 1) {
-          if (results[0].types[0].toLowerCase() != "route") {
-            err("Non è stato possibile trovare l'indirizzo. Ricontrollare i dati inseriti.");
+          if (results[0].geometry.location.lat() == null || results[0].geometry.location.lng() == null) {
+            console.log("geodecode_address error: lat or lng is null, but status OK");
+            if (err != null) err("geodecode_address error: lat or lng is null, but status OK");
           } else {
-            callback({status: status, results: results});
+            callback({ status: status, results: results });
           }
         } else {
-          callback({status: status, results: results});
+          callback({ status: status, results: results });
         }
       }
-      else err({status: status});
+      else {
+        console.log("geodecode_address error: status not OK, but " + status);
+        if (err != null) err("geodecode_address error: status not OK, but " + status);
+      }
     } catch (errdata) {
-      err(errdata);
+      console.log("geodecode_address catch error: " + errdata);
+      if (err != null) err("geodecode_address catch error: " + errdata);
     }
   });
 
