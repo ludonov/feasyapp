@@ -8,6 +8,8 @@
 
 var cordova_file, cordova_file_transfer;
 
+var current_user;
+
 angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives', 'ngCordova'])
 
 

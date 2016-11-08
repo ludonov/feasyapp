@@ -12,16 +12,12 @@ angular.module('app.controllers', [])
 
   .controller('StartupCtrl', function ($scope, $ionicPlatform, $rootScope,  $state, $timeout, $ionicPopup, $ionicHistory, $q, UserService, DataExchange, $ionicLoading, $cordovaFileTransfer, $cordovaFile) {
 
-    $scope.logo = { src: 'images/logo.png' };
-
     ionic_Popup = $ionicPopup;
     root_scope = $rootScope;
 
-
     $scope.check_login = function () {
-
       
-      current_user = UserService.getUser();
+      //current_user = UserService.getUser();
 
       if (current_user.objectId != undefined) {
         $ionicHistory.nextViewOptions({
@@ -393,20 +389,20 @@ angular.module('app.controllers', [])
 
   .controller('HomeCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
-    try {
-      if (Backendless.Users.getCurrentUser() != null) {
-        $ionicPopup.alert({
-          title: "Login",
-          template: "Welcome, " + Backendless.Users.getCurrentUser().first_name + "!"
-        });
-      }
-    }
-    catch (e) {
-      $ionicPopup.alert({
-        title: "Info",
-        template: e.message
-      });
-    }
+    //try {
+    //  if (Backendless.Users.getCurrentUser() != null) {
+    //    $ionicPopup.alert({
+    //      title: "Login",
+    //      template: "Welcome, " + Backendless.Users.getCurrentUser().first_name + "!"
+    //    });
+    //  }
+    //}
+    //catch (e) {
+    //  $ionicPopup.alert({
+    //    title: "Info",
+    //    template: e.message
+    //  });
+    //}
 
     $scope.showLogOutMenu = function () {
       var hideSheet = $ionicActionSheet.show({
@@ -1313,6 +1309,11 @@ angular.module('app.controllers', [])
 
   })
 
+
+  .run(['UserService', function (UserService) {
+    current_user = UserService.getUser();
+  }]);
+
 var UserStorage         = function () { return Backendless.Persistence.of(Backendless.User) };
 var AddressInfoStorage  = function () { return Backendless.Persistence.of(window.Classes.AddressInfo) };
 var PaymentInfoStorage  = function () { return Backendless.Persistence.of(window.Classes.PaymentInfo) };
@@ -1322,5 +1323,3 @@ var MeasureUnitsStorage = function () { return Backendless.Persistence.of(window
 
 
 var ionic_Popup;
-var ciao = {name: "aaa"};
-var current_user;
