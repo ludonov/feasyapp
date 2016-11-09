@@ -10,9 +10,8 @@ angular.module('app.controllers', [])
     $ionicConfigProvider.navBar.positionSecondaryButtons("right");
   })
 
-  .controller('StartupCtrl', function ($scope, $ionicPlatform, $rootScope,  $state, $timeout, $ionicPopup, $ionicHistory, $q, UserService, DataExchange, $ionicLoading, $cordovaFileTransfer, $cordovaFile) {
+  .controller('StartupCtrl', function ($scope, $ionicPlatform, $rootScope,  $state, $timeout, $ionicHistory, $q, UserService, DataExchange, $ionicLoading, $cordovaFileTransfer, $cordovaFile) {
 
-    ionic_Popup = $ionicPopup;
     root_scope = $rootScope;
 
     $scope.check_login = function () {
@@ -44,7 +43,7 @@ angular.module('app.controllers', [])
   })
 
 
-  .controller('LoginCtrl', function ($scope, $rootScope,  $state, $ionicPopup, $ionicHistory, $q, UserService, DataExchange, $ionicLoading, $cordovaFileTransfer, $cordovaFile) {
+  .controller('LoginCtrl', function ($scope, $rootScope,  $state, $ionicHistory, $q, UserService, DataExchange, $ionicLoading, $cordovaFileTransfer, $cordovaFile) {
 
     $scope.userdata = {
       email: "info@feasyapp.com",
@@ -62,12 +61,9 @@ angular.module('app.controllers', [])
 
     function gotErrorRegister(err) { // see more on error handling
       $ionicLoading.hide();
-      console.log("error message - " + err.message);
-      console.log("error code - " + err.statusCode);
-      $ionicPopup.alert({
-        title: "Register failed",
-        template: err.message
-      });
+      console.warn("gotErrorRegister error message: " + err.message);
+      console.warn("gotErrorRegister error code: " + err.statusCode);
+      navigator.notification.alert("Register failed: " + err.message, null, "Oops", "Ok");
     }
     function userUpdated(user) {
       $ionicLoading.hide();
@@ -80,8 +76,8 @@ angular.module('app.controllers', [])
       try {
         return Backendless.UserService.register(usr, new Backendless.Async(userRegistered,
           function (err) { // see more on error handling
-            console.log("error message - " + err.message);
-            console.log("error code - " + err.statusCode);
+            console.log("error message: " + err.message);
+            console.log("error code: " + err.statusCode);
             if (err.statusCode == 409) {
 
               var temp_user = Backendless.UserService.login(usr.email, usr.password);
@@ -97,20 +93,16 @@ angular.module('app.controllers', [])
 
             } else {
               $ionicLoading.hide();
-              $ionicPopup.alert({
-                title: "Register failed",
-                template: err.message
-              });
+              console.warn("forceRegisterAccount (Backendless.UserService.register) error: " + err.message);
+              navigator.notification.alert("Register failed: " + err.message, null, "Oops", "Ok");
             }
           })
         );
       }
       catch (e) {
         $ionicLoading.hide();
-        $ionicPopup.alert({
-          title: "Registration failed",
-          template: e.message
-        });
+        console.warn("forceRegisterAccount error: " + e.message);
+        navigator.notification.alert("Registration failed: " + e.message, null, "Oops", "Ok");
       }
     }
 
@@ -145,22 +137,16 @@ angular.module('app.controllers', [])
           // Fail get profile info
           $ionicLoading.hide();
           console.log('profile info fail', fail);
-          $ionicPopup.alert({
-            title: "Error",
-            template: "profile info fail"
-          });
+          navigator.notification.alert("Profile info failed", null, "Oops", "Ok");
         });
     };
 
 
     // This is the fail callback from the login method
     var fbLoginError = function (error) {
-      console.log('fbLoginError', error);
+      console.log('fbLoginError: ' + error);
       $ionicLoading.hide();
-      $ionicPopup.alert({
-        title: "Error",
-        template: error.message
-      });
+      navigator.notification.alert("FB login comunication: " + error.message, null, "Oops", "Ok");
     };
 
     // This method is to get the user profile info from the facebook api
@@ -277,10 +263,7 @@ angular.module('app.controllers', [])
           });
           $state.go('tabsController.Home');
         } else {
-          $ionicPopup.alert({
-            title: 'Info',
-            template: 'Login failed'
-          });
+          navigator.notification.alert("Login failed", null, "Oops", "Ok");
         }
 
         // if (current_user.fb_user_id != null && current_user.fb_user_id != "") {
@@ -292,10 +275,8 @@ angular.module('app.controllers', [])
       }
       catch (e) {
         $ionicLoading.hide();
-        $ionicPopup.alert({
-          title: "Login failed",
-          template: e.message
-        });
+        console.warn("Login failed: " + e.message);
+        navigator.notification.alert("Login failed: " + e.message, null, "Oops", "Ok");
       }
     }
 
@@ -307,7 +288,7 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('SignupCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('SignupCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.userdata = new Backendless.User();
 
@@ -330,46 +311,34 @@ angular.module('app.controllers', [])
       }
       catch (e) {
         $ionicLoading.hide();
-        $ionicPopup.alert({
-          title: "Info",
-          template: "Register ok but login failed: " + e.message
-        });
+        console.warn("Registration succeded, but login failed: " + e.message);
+        navigator.notification.alert("Registration succeded, but login failed: " + e.message, null, "Info", "Ok");
       }
     }
 
     function gotErrorRegister(err) { // see more on error handling
       $ionicLoading.hide();
-      console.log("error message - " + err.message);
-      console.log("error code - " + err.statusCode);
-      $ionicPopup.alert({
-        title: "Register failed",
-        template: err.message
-      });
+      console.log("gotErrorRegister error message: " + err.message);
+      console.log("gotErrorRegister error code: " + err.statusCode);
+      navigator.notification.alert("Registration failed: " + err.message, null, "Info", "Ok");
     }
 
     $scope.registerAccount = function () {
       try {
 
         if (!document.getElementById('cbLegal').checked) {
-          $ionicPopup.alert({
-            title: "Wait",
-            template: "You must accept the legal conditions to register"
-          });
+          navigator.notification.alert("You must accept the legal conditions to register", null, "Info", "Ok");
         } else {
-
           $ionicLoading.show({
             template: 'Registering...'
           });
-
           return Backendless.UserService.register($scope.userdata, new Backendless.Async(userRegistered, gotErrorRegister));
         }
       }
       catch (e) {
         $ionicLoading.hide();
-        $ionicPopup.alert({
-          title: "Registration failed",
-          template: e.message
-        });
+        console.warn("registerAccount Registration failed: " + e.message);
+        navigator.notification.alert("Registration failed: " + e.message, null, "Info", "Ok");
       }
     }
 
@@ -377,57 +346,41 @@ angular.module('app.controllers', [])
     document.getElementById("btnRegister").addEventListener("click", $scope.registerAccount, false);
   })
 
-  .controller('RecoverPassCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('RecoverPassCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
-  .controller('CreateAccountCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('CreateAccountCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     // QUESTA PAGINA E' INUTILE! VEDI LA 24, MODIFICA ROFILO
 
   })
 
-  .controller('HomeCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('HomeCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
-    //try {
-    //  if (Backendless.Users.getCurrentUser() != null) {
-    //    $ionicPopup.alert({
-    //      title: "Login",
-    //      template: "Welcome, " + Backendless.Users.getCurrentUser().first_name + "!"
-    //    });
-    //  }
-    //}
-    //catch (e) {
-    //  $ionicPopup.alert({
-    //    title: "Info",
-    //    template: e.message
-    //  });
-    //}
+
 
     $scope.showLogOutMenu = function () {
-      var hideSheet = $ionicActionSheet.show({
-        destructiveText: 'Logout',
-        titleText: 'Are you sure you want to logout? This app is awsome so I recommend you to stay.',
-        cancelText: 'Cancel',
-        cancel: function () { },
-        buttonClicked: function (index) {
-          return true;
-        },
-        destructiveButtonClicked: function () {
-          $ionicLoading.show({
-            template: 'Logging out...'
-          });
-
-          // Facebook logout
-          facebookConnectPlugin.logout(function () {
-            $ionicLoading.hide();
-            $state.go('Login');
-          },
-            function (fail) {
-              $ionicLoading.hide();
+      navigator.notification.confirm("Are you sure you want to logout? This app is awsome so I recommend you to stay.",
+        function (buttonIndex) {
+          if (buttonIndex == 2) {
+            console.log("Logging out...");
+            $ionicLoading.show({
+              template: 'Logging out...'
             });
-        }
-      });
+            // Facebook logout
+            facebookConnectPlugin.logout(
+              function () {
+                $ionicLoading.hide();
+                $state.go('Login');
+              },
+              function (fail) {
+                $ionicLoading.hide();
+              }
+            );
+          }
+        }, "Welcome!", ["Ok", "Cancel"]
+      );
     };
 
     $scope.goto_mylists = function () {
@@ -448,7 +401,7 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('MyListsToCommissionCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('MyListsToCommissionCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $rootScope.lists = (current_user.lists);
 
@@ -478,35 +431,26 @@ angular.module('app.controllers', [])
     }
 
     $scope.add_list = function () {
-      // An elaborate, custom popup
-      var myPopup = $ionicPopup.show({
-        template: '<input type="text" ng-model="userinput.listname">',
-        title: 'Inserisci il nome della lista',
-        subTitle: '(ex. spesa per le cena, spesa generica, spesa per festa, ...)',
-        scope: $scope,
-        buttons: [
-          { text: 'Cancel' },
-          {
-            text: '<b>Salva</b>',
-            type: 'button-positive',
-            onTap: function (e) {
-              if (!$scope.userinput.listname) {
-                //don't allow the user to close unless he enters wifi password
-                e.preventDefault();
-              } else {
-                return $scope.userinput.listname;
-              }
-            }
-          }
-        ]
-      });
 
-      myPopup.then(function (res) {
+      var onPrompt = function onPrompt(results) {
+        if (results.buttonIndex == 2)
+          after_prompt(results.input1);
+      }
+
+      navigator.notification.prompt(
+          'Inserisci il nome della lista',
+          onPrompt,
+          'Nuova lista',
+          ['Ok', 'Cancel'],
+          ''
+      );
+
+      var after_prompt = function (res) {
         if (!check_token())
           return;
         if (res == undefined || res == null || res == "")
           return;
-        console.log('Tapped!', res);
+        console.log('New list name: ', res);
         $ionicLoading.show({
           template: 'Please wait...'
         });
@@ -515,16 +459,12 @@ angular.module('app.controllers', [])
         temp_usr.lists.push(list);
         var temp_usr = backendlessify_user(temp_usr);
         UserStorage().save(temp_usr, new Backendless.Async(userUpdated, onError));
-      });
+      }
 
       onError = function (err) {
         $ionicLoading.hide();
-        console.log("error");
-        console.log(err);
-        $ionicPopup.alert({
-          title: "Error",
-          template: err.message
-        });
+        console.log("error" + err);
+        navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
       }
 
       userUpdated = function (saved_user) {
@@ -553,7 +493,7 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('ListViewCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ListViewCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.goto_item_detail = function (productId) {
       $state.go('tabsController.ElementDetails', { ProductId: productId });
@@ -566,10 +506,7 @@ angular.module('app.controllers', [])
     $scope.publicate = function () {
 
       if ($rootScope.list.items == null || $rootScope.list.items.length == 0) {
-        $ionicPopup.alert({
-          title: "Info",
-          template: "Inserire almeno un elemento nella lista"
-        });
+        navigator.notification.alert("Inserire almeno un elemento nella lista", null, "Info", "Ok");
         return;
       }
 
@@ -581,33 +518,24 @@ angular.module('app.controllers', [])
       if (!check_token())
         return;
 
-      // A confirm dialog
-      var confirmPopup = $ionicPopup.confirm({
-        title: 'Conferma',
-        template: 'Sei sicuro di voler eliminare questa lista?'
-      });
+      navigator.notification.confirm('Sei sicuro di voler eliminare questa lista?', 
+        function (buttonIndex) {
+          if (buttonIndex == 2) {
+            console.log("user wants to delete list: " + $rootScope.list.objectId);
+            $ionicLoading.show({
+              template: 'Please wait...'
+            });
+            $rootScope.list.remove(new Backendless.Async(listRemoved, onError));
+          }
+        }, "Conferma", ["Sì", "No"]
+      );
 
-      confirmPopup.then(function (res) {
-        if (res) {
-          console.log("user wants to delete list: " + $rootScope.list.objectId);
-          $ionicLoading.show({
-            template: 'Please wait...'
-          });
-          $rootScope.list.remove(new Backendless.Async(listRemoved, onError));
-        } else {
-          console.log("user doesn't wants to delete list");
-        }
-      });
     }
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error");
-      console.log(err);
-      $ionicPopup.alert({
-        title: "Error",
-        template: err.message
-      });
+      console.log("error" + err);
+      navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
     listRemoved = function (removed_list) {
@@ -623,7 +551,7 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('NewListElementCtrl', function ($scope, $rootScope, $state, $ionicPopup, UserService, DataExchange, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('NewListElementCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     // QUESTA PAGINA E' INUTILE !!!!
 
@@ -680,7 +608,7 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('PublicateListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('PublicateListCtrl', function ($scope, $rootScope, $state, $ionicPopup, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.modal_address = create_blank_geopoint();
     $scope.modal_address_old = null;
@@ -725,12 +653,8 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error");
-      console.log(err);
-      $ionicPopup.alert({
-        title: "Error",
-        template: err.message
-      });
+      console.log("error" + err);
+      navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
     listUpdated = function (saved_list) {
@@ -790,20 +714,17 @@ angular.module('app.controllers', [])
 
         } else {
           if (data.results[0].partial_match) {
-            var confirmPopup = $ionicPopup.confirm({
-              title: 'Indirizzo incompleto',
-              template: 'Forse intendevi: ' + data.results[0].formatted_address + " ?"
-            });
-
-            confirmPopup.then(function(res) {
-              if(res) {
-                update_list_from_google(data.results[0]);
-                if (arrayObjectIndexOf($rootScope.list.delivery_addresses, $scope.modal_address.metadata, "metadata") == -1) {
-                  add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
+            navigator.notification.confirm("Forse intendevi: " + data.results[0].formatted_address + " ?",
+              function (buttonIndex) {
+                if (buttonIndex == 2) {
+                  update_list_from_google(data.results[0]);
+                  if (arrayObjectIndexOf($rootScope.list.delivery_addresses, $scope.modal_address.metadata, "metadata") == -1) {
+                    add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
+                  }
+                  $scope.modal.hide();
                 }
-                $scope.modal.hide();
-              }
-            });
+              }, 'Indirizzo incompleto', ["Sì", "No"]
+            );
           } else {
             update_list_from_google(data.results[0]);
             if (arrayObjectIndexOf($rootScope.list.delivery_addresses, $scope.modal_address.metadata, "metadata") == -1) {
@@ -814,10 +735,7 @@ angular.module('app.controllers', [])
         }
       }, function (errdata) {
         $ionicLoading.hide();
-        $ionicPopup.alert({
-          title: "Indirizzo non valido",
-          template: errdata.status ? errdata.status : errdata
-        });
+        navigator.notification.alert(errdata.status ? errdata.status : errdata, null, "Indirizzo non valido", 'Ok');
       });
     }
 
@@ -828,12 +746,11 @@ angular.module('app.controllers', [])
         $rootScope.list.delivery_addresses.splice(index, 1);
         $scope.closeAddressModal();
       } else {
-        $ionicPopup.alert({
-          title: "Info",
-          template: "Problem while deleting: cannot find the address."
-        }).then(function () {
-          $scope.closeAddressModal();
-        });
+        navigator.notification.alert("Problem while deleting the address: cannot find the address.", 
+          function () {
+            $scope.closeAddressModal();
+          }, "Info", 'Ok'
+        );
       }
     }
 
@@ -849,24 +766,15 @@ angular.module('app.controllers', [])
         return;
 
       if ($rootScope.list.name == null || $rootScope.list.name == "") {
-        $ionicPopup.alert({
-          title: "Info",
-          template: "Inserire il nome della lista è essenziale per gestire facilmente le tue liste!"
-        });
+        navigator.notification.alert("Inserire il nome della lista è essenziale per gestire facilmente le tue liste!", null, "Info", 'Ok');
         return;
       }
       if ($rootScope.list.delivery_addresses == null || $rootScope.list.delivery_addresses.length == 0) {
-        $ionicPopup.alert({
-          title: "Info",
-          template: "Inserire almeno un indirizzo di consegna."
-        });
+        navigator.notification.alert("Inserire almeno un indirizzo di consegna.", null, "Info", 'Ok');
         return;
       }
       if ($rootScope.list.reward == null || $rootScope.list.reward == "0" || $rootScope.list.reward == "") {
-        $ionicPopup.alert({
-          title: "Info",
-          template: "Inserire la mancia."
-        });
+        navigator.notification.alert("Inserire la mancia", null, "Info", 'Ok');
         return;
       }
       $ionicLoading.show({
@@ -886,7 +794,7 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('PublicatedListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('PublicatedListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.view_candidates = function () {
       $state.go("tabsController.CandidateList");
@@ -898,12 +806,12 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('ConfirmedListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ConfirmedListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
 
   })
 
-  .controller('ProductsPublicatedListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ProductsPublicatedListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.view_product_details = function (product) {
       $state.go('tabsController.ElementDetails', { ProductId: product.objectId });
@@ -911,7 +819,7 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('ElementDetailsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ElementDetailsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.product_idx = arrayObjectIndexOf($rootScope.list.items, $state.params.ProductId, "objectId");
     $scope.units = getUnitsNames();
@@ -932,12 +840,8 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error");
-      console.log(err);
-      $ionicPopup.alert({
-        title: "Error",
-        template: err.message
-      });
+      console.log("error" + err);
+      navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
     itemRemoved = function (item_removed) {
@@ -961,12 +865,9 @@ angular.module('app.controllers', [])
         });
         $scope.product.remove(new Backendless.Async(itemRemoved, onError));
       } else {
-        $ionicPopup.alert({
-          title: "Info",
-          template: "Problem while deleting: cannot find the product."
-        }).then(function () {
+        navigator.notification.alert("Problem while deleting: cannot find the product.", function () {
           $ionicHistory.goBack();
-        });
+        }, "Info", 'Ok');
       }
     }
 
@@ -986,17 +887,11 @@ angular.module('app.controllers', [])
         return;
 
       if ($scope.product.name == null) {
-        $ionicPopup.alert({
-          title: "Info",
-          template: "Inserisci il nome del prodotto"
-        });
+        navigator.notification.alert("Inserisci il nome del prodotto", null, "Info", 'Ok');
         return;
       }
       if ($scope.product.qty == null) {
-        $ionicPopup.alert({
-          title: "Info",
-          template: "Inserisci la quantità"
-        });
+        navigator.notification.alert("Inserisci la quantità", null, "Info", 'Ok');
         return;
       }
 
@@ -1021,7 +916,7 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('CandidateListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('CandidateListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.view_candidate_info = function (candidate) {
       $state.go('tabsController.CandidateInfo', { CandidateId: candidate.objectId });
@@ -1029,22 +924,19 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('PublicatedListDetailsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('PublicatedListDetailsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
-  .controller('CandidateInfoCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('CandidateInfoCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.candidate_idx = arrayObjectIndexOf($rootScope.list.candidates, $state.params.CandidateId, "objectId");
     if ($scope.candidate_idx > -1 ){
       $scope.candidate = $rootScope.list.candidates[$scope.candidate_idx];
     } else {
-      $ionicPopup.alert({
-        title: "Info",
-        template: "Impossibile trovare il candidato"
-      }).then(function () {
+      navigator.notification.alert("Impossibile trovare il candidato", function () {
         $ionicHistory.goBack();
-      });
+      }, "Oops", 'Ok');
     }
 
     $scope.view_candidate_profile = function () {
@@ -1067,12 +959,8 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error");
-      console.log(err);
-      $ionicPopup.alert({
-        title: "Error",
-        template: err.message
-      });
+      console.log("error" + err);
+      navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
     listUpdated = function (saved_list) {
@@ -1087,23 +975,20 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('CandidateProfileCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('CandidateProfileCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.candidate_idx = arrayObjectIndexOf($rootScope.list.candidates, $state.params.CandidateId, "objectId");
     if ($scope.candidate_idx > -1 ){
       $scope.candidate = $rootScope.list.candidates[$scope.candidate_idx];
     } else {
-      $ionicPopup.alert({
-        title: "Info",
-        template: "Impossibile trovare il candidato"
-      }).then(function () {
+      navigator.notification.alert("Impossibile trovare il candidato", function () {
         $ionicHistory.goBack();
-      });
+      }, "Oops", 'Ok');
     }
 
   })
 
-  .controller('UserProfileCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('UserProfileCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.current_user = current_user;
 
@@ -1118,7 +1003,7 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('FindListOnMapCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory, $cordovaGeolocation) {
+  .controller('FindListOnMapCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory, $cordovaGeolocation) {
 
     var options = { timeout: 10000, enableHighAccuracy: true };
 
@@ -1129,11 +1014,9 @@ angular.module('app.controllers', [])
 
     var definitive_err = function (err) {
       $ionicLoading.hide();
-      $ionicPopup.alert({
-        title: "Info",
-        template: "Impossibile trovare la posizione attuale"
-      });
-      $ionicHistory.goBack();
+      navigator.notification.alert("Impossibile trovare la posizione attuale", function () {
+        $ionicHistory.goBack();
+      }, "Oops", 'Ok');
     }
 
     var position_err = function () {
@@ -1222,31 +1105,31 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('MyListsToDoCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('MyListsToDoCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
-  .controller('FilterListOnMapCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('FilterListOnMapCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
-  .controller('ChatListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ChatListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
-  .controller('ChatCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ChatCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
-  .controller('WalletCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('WalletCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
-  .controller('HistoryCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('HistoryCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
-  .controller('SettingsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('SettingsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     userLoggedOut = function () {
       $ionicHistory.nextViewOptions({
@@ -1263,7 +1146,7 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('EditProfileCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('EditProfileCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
     $scope.user = current_user;
 
     $scope.save_user = function () {
@@ -1278,12 +1161,8 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error");
-      console.log(err);
-      $ionicPopup.alert({
-        title: "Error",
-        template: err.message
-      });
+      console.log("error" + err);
+      navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
     userUpdated = function (saved_user) {
@@ -1297,15 +1176,15 @@ angular.module('app.controllers', [])
     }
   })
 
-  .controller('ResetPasswordCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ResetPasswordCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
-  .controller('TermsAndConditionsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('TermsAndConditionsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
-  .controller('ListInfoFromMapCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicPopup, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ListInfoFromMapCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
   })
 
@@ -1320,6 +1199,3 @@ var PaymentInfoStorage  = function () { return Backendless.Persistence.of(window
 var ShoppingListStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingList) };
 var ShoppingItemStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingItem) };
 var MeasureUnitsStorage = function () { return Backendless.Persistence.of(window.Classes.MeasureUnits) };
-
-
-var ionic_Popup;
