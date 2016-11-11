@@ -451,7 +451,7 @@ angular.module('app.controllers', [])
           temp_usr.lists = [];
         temp_usr.lists.push(list);
         var temp_usr = backendlessify_user(temp_usr);
-        UserStorage().save(temp_usr, new Backendless.Async(userUpdated, onError));
+        Backendless.UserService.update(temp_usr, new Backendless.Async(userUpdated, onError));
       }
 
       onError = function (err) {
@@ -1293,7 +1293,7 @@ angular.module('app.controllers', [])
       });
 
       var temp_usr = backendlessify_user($scope.user);
-      UserStorage().save(temp_usr, new Backendless.Async(userUpdated, onError));
+      Backendless.UserService.update(temp_usr, new Backendless.Async(userUpdated, onError));
     }
 
     onError = function (err) {
