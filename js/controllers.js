@@ -1072,6 +1072,7 @@ angular.module('app.controllers', [])
         var marker = new google.maps.Marker({
           map: map,
           //animation: google.maps.Animation.DROP,
+          icon: 'images/map_marker.png',
           position: new google.maps.LatLng(_lat, _lng)
         });
 
