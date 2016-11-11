@@ -21,11 +21,24 @@ angular.module('app.services', [])
         if (_user.email == undefined || _user.password == undefined) {
           return {};
         }
-        return Backendless.UserService.login(_user.email, _user.password);
+        var backend_user = Backendless.UserService.login(_user.email, _user.password);
+        var lists = null;
+        updateLists(backend_user);
+        return backend_user;
       } catch (e) {
         return {};
       }
     };
+
+    var updateLists = function (user) {
+      try {
+        lists = Backendless.Persistence.of(window.Classes.ShoppingList).find();
+        if (lists != null && lists.data != null && lists.data.length > 0)
+          user.lists = lists.data;
+      } catch (e) {
+      }
+      return user;
+    }
 
     var logout = function () {
       window.localStorage.removeItem("user");
@@ -34,6 +47,7 @@ angular.module('app.services', [])
     return {
       getUser: getUser,
       setUser: setUser,
+      updateLists: updateLists,
       logout: logout
     };
 

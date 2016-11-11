@@ -135,7 +135,7 @@ angular.module('app.routes', [])
 
     .state('tabsController.ProductsPublicatedList', { /**/
 
-      url: '/ProductsPublicatedList',
+      url: '/ProductsPublicatedList/:from_demander',
       views: {
         'tab_liste': {
           templateUrl: '12_lista_prodotti_gia_pubblicata.html',
@@ -272,7 +272,7 @@ angular.module('app.routes', [])
 
     .state('Settings', {
 
-      url: '/Home/Settings',
+      url: '/Settings',
       templateUrl: '23_impostazioni.html',
       controller: 'SettingsCtrl'
 
@@ -308,6 +308,17 @@ angular.module('app.routes', [])
       templateUrl: '27_spesa_selezionata_da_mappa.html',
       controller: 'ListInfoFromMapCtrl'
 
+    })
+
+    .state('tabsController.ShopperListView', { /**/
+
+      url: '/ShopperListView/:confirmed',
+      views: {
+        'tab_trova': {
+          templateUrl: '28_spesario_info_lista.html',
+          controller: 'ShopperListViewCtrl'
+        }
+      }
     });
 
   $urlRouterProvider.otherwise('/Startup');

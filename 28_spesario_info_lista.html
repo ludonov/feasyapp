@@ -1,0 +1,80 @@
+<ion-view title="Nome lista" id="page10" class="background-color-body">
+    <ion-nav-title class="title-custom">{{list.name}}</ion-nav-title>
+
+    <ion-content  class="overflow-scroll has-header has-tabs">
+      <div class="list">
+
+        <div class="card">
+          <div class="item item-divider SF-medium">
+            Autore
+          </div>
+          <div class="item item-text-wrap SF-regular">
+            <a class="item item-avatar" ui-sref="#">
+              <img src="images/11_lista_pubblicata_con_spesario/Daniele.jpg">
+              <h2>{{list_author.first_name}} {{list_author.last_name}}</h2>
+              <p>Commissioni fatte: 24<br>Commissioni Ricevute: 36</p>
+            </a>
+          </div>
+        </div>
+
+        <div class="item item-divider item-title background-color-list-item-divider" style="color">
+          <br>
+          DETTAGLI COMMISSIONE
+        </div>
+        <a class="item item-field">
+          Mancia
+          <span class="item-note item-content profile-element-content"">{{list.reward}}</span>
+        </a>
+        <a class="item item-field">
+          Negozio
+          <span class="item-note item-content profile-element-content" >{{list.preferred_shops}}</span>
+        </a>
+        <a class="item item-field">
+          Peso stimato
+          <span class="item-note item-content profile-element-content">{{list.estimated_weight}}</span>
+        </a>
+        <a class="item item-field">
+          Tetto massimo
+          <span class="item-note item-content profile-element-content">{{list.max_value}}</span>
+        </a>
+
+        <div class="item item-divider item-title background-color-list-item-divider" style="border-top-color: transparent;">
+          <br>
+          DETTAGLI CONSEGNA
+        </div>
+
+        <ion-item class="item-icon-right " ng-repeat="address in list.delivery_addresses" type="item-text-wrap" ng-click="view_address(address)">
+          <h2>{{address.metadata.formatted_address}}</h2>
+          <p>dalle {{address.metadata.time_from}} &nbsp; alle {{address.metadata.time_to}}</p>
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </ion-item>
+
+        <div class="item item-divider background-color-list-item-divider">
+          <br>
+          <br>
+        </div>
+
+        <a class="item item-field item-icon-left item-icon-right" ng-click="view_products()">
+          <i class="icon ion-clipboard" style="color:#3b88f2"></i> <!--#8c8c8c-->
+          Lista prodotti
+          <i class="icon ion-ios-arrow-right" style="color:#8c8c8c"></i>
+        </a>
+        <a class="item item-icon-left" ui-sref="Chat" ng-show="confirmed">
+          <i class="icon ion-ios-chatbubble-outline SF-regular"></i>
+          Chat
+        </a>
+        <div class="item item-divider SF-medium background-color-list-item-divider">
+          <br>
+        </div>
+        <a class="item SF-thin center" style="color:darkblue; font-weight:bold" ng-click="accept_list()" ng-hide="confirmed">
+          ACCETTA LISTA
+        </a>
+        <a class="item SF-thin center" style="color:red; font-weight:bold" ng-click="withdraw_bid()" ng-show="confirmed">
+          RITIRA PROPOSTA
+        </a>
+
+      </div>
+
+    </ion-content>
+
+</ion-view>

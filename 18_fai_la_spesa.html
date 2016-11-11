@@ -1,20 +1,23 @@
 <ion-view title="Fai una commissione" id="page18A">
   <ion-nav-title class="title-custom">Fai una commissione</ion-nav-title>
+
   <ion-nav-buttons side="secondary">
-    <button class="button button-small icon-color bar-button-color SF-regular" ui-sref="tabsController.FilterListOnMap">FILTRA</button>
+    <button class="button button-small icon-color bar-button-color SF-regular" ui-sref="FilterListOnMap">FILTRA</button>
   </ion-nav-buttons>
+
   <div class="tabs-striped tabs-top tabs-background-color tabs-color-light">
     <div class="tabs">
       <a class="tab-item active" ui-sref="#">
         Cerca
       </a>
-      <a class="tab-item" ng-click="goto_list()">
+      <a class="tab-item" ui-sref="tabsController.MyListsToDo">
         Spese
       </a>
     </div>
   </div>
 
   <ion-content class="overflow-scroll has-header has-tabs">
-    <div id="map" data-tap-disabled="true"></div>
+    <div ui-view="map"></div>
+    <div ui-view="list"></div>
   </ion-content>
 </ion-view>

@@ -35,10 +35,17 @@ angular.module('app.controllers', [])
 
     start_splash();
 
-    $timeout(function () {
-      navigator.splashscreen.hide();
+    var hide_splash = function () {
+      try {
+        navigator.splashscreen.hide();
+      } catch (e) {
+        console.warn("hide splashscreen err: " + e.message);
+        //$timeout(hide_splash, 500);
+      }
       $timeout($scope.check_login, 3500);
-    }, 500);
+    }
+
+    $timeout(hide_splash, 500);
 
   })
 
@@ -363,7 +370,7 @@ angular.module('app.controllers', [])
     $scope.showLogOutMenu = function () {
       navigator.notification.confirm("Are you sure you want to logout? This app is awsome so I recommend you to stay.",
         function (buttonIndex) {
-          if (buttonIndex == 2) {
+          if (buttonIndex == 1) {
             console.log("Logging out...");
             $ionicLoading.show({
               template: 'Logging out...'
@@ -382,22 +389,6 @@ angular.module('app.controllers', [])
         }, "Welcome!", ["Ok", "Cancel"]
       );
     };
-
-    $scope.goto_mylists = function () {
-      $state.go("tabsController.MyListsToCommission");
-    }
-
-    $scope.goto_find_lists = function () {
-      $state.go("tabsController.FindListOnMap");
-    }
-
-    $scope.goto_userprofile = function () {
-      $state.go("UserProfile");
-    }
-
-    $scope.goto_settings = function () {
-      $state.go("Settings");
-    }
 
   })
 
@@ -433,7 +424,7 @@ angular.module('app.controllers', [])
     $scope.add_list = function () {
 
       var onPrompt = function onPrompt(results) {
-        if (results.buttonIndex == 2)
+        if (results.buttonIndex == 1)
           after_prompt(results.input1);
       }
 
@@ -456,6 +447,8 @@ angular.module('app.controllers', [])
         });
         var list = new window.Classes.ShoppingList({ updated: new Date(), created: new Date(), name: res });
         var temp_usr = angular.copy(current_user);
+        if (temp_usr.lists == null)
+          temp_usr.lists = [];
         temp_usr.lists.push(list);
         var temp_usr = backendlessify_user(temp_usr);
         UserStorage().save(temp_usr, new Backendless.Async(userUpdated, onError));
@@ -472,6 +465,8 @@ angular.module('app.controllers', [])
         console.log("user updated, list added");
         console.log(saved_user);
         current_user = angular.copy(saved_user);
+        UserService.updateLists(current_user);
+        UserService.setUser(current_user);
         $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
         $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
         $rootScope.lists = current_user.lists;
@@ -495,14 +490,6 @@ angular.module('app.controllers', [])
 
   .controller('ListViewCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
-    $scope.goto_item_detail = function (productId) {
-      $state.go('tabsController.ElementDetails', { ProductId: productId });
-    }
-
-    $scope.add_item = function () {
-      $state.go('tabsController.ElementDetails');
-    }
-
     $scope.publicate = function () {
 
       if ($rootScope.list.items == null || $rootScope.list.items.length == 0) {
@@ -520,7 +507,7 @@ angular.module('app.controllers', [])
 
       navigator.notification.confirm('Sei sicuro di voler eliminare questa lista?', 
         function (buttonIndex) {
-          if (buttonIndex == 2) {
+          if (buttonIndex == 1) {
             console.log("user wants to delete list: " + $rootScope.list.objectId);
             $ionicLoading.show({
               template: 'Please wait...'
@@ -674,6 +661,11 @@ angular.module('app.controllers', [])
       $scope.modal_address.latitude = result.geometry.location.lat();
       $scope.modal_address.longitude = result.geometry.location.lng();
       $scope.modal_address.metadata.formatted_address = result.formatted_address;
+      $scope.modal_address.metadata.linked_list_id = $rootScope.list.objectId;
+      $scope.modal_address.metadata.number_of_pieces = $rootScope.list.items.length;
+      $scope.modal_address.metadata.reward = $rootScope.list.reward;
+      $scope.modal_address.metadata.preferred_shops = $rootScope.list.preferred_shops;
+      $scope.modal_address.metadata.estimated_weight = $rootScope.list.estimated_weight;
       for (var j = 0; j < result.address_components.length; j++) {
         if (result.address_components[j].types[0] == "route")
           $scope.modal_address.metadata.street_name = result.address_components[j].short_name;
@@ -689,7 +681,7 @@ angular.module('app.controllers', [])
     $scope.close_addr_modal =  function (result) {
       update_list_from_google(result);
       if (arrayObjectIndexOf($rootScope.list.delivery_addresses, $scope.modal_address.metadata, "metadata") == -1) {
-        add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
+        $rootScope.list.delivery_addresses = add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
       }
       $scope.modal.hide();
       $scope.AddressPopup.close();
@@ -707,7 +699,7 @@ angular.module('app.controllers', [])
           $scope.addresses_found = data.results;
           $scope.AddressPopup = $ionicPopup.show({
             template: '<button ng-repeat-start="addr in addresses_found" class="button button-light" ng-click="close_addr_modal(addr)"> {{addr.formatted_address}}</button><br><br ng-repeat-end>',
-            title: 'Sono stati trovati più indirizzi',
+            title: 'Scegli un indirizzo',
             scope: $scope,
             buttons: [{ text: 'Cancel' }]
           });
@@ -716,10 +708,10 @@ angular.module('app.controllers', [])
           if (data.results[0].partial_match) {
             navigator.notification.confirm("Forse intendevi: " + data.results[0].formatted_address + " ?",
               function (buttonIndex) {
-                if (buttonIndex == 2) {
+                if (buttonIndex == 1) {
                   update_list_from_google(data.results[0]);
                   if (arrayObjectIndexOf($rootScope.list.delivery_addresses, $scope.modal_address.metadata, "metadata") == -1) {
-                    add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
+                    $rootScope.list.delivery_addresses = add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
                   }
                   $scope.modal.hide();
                 }
@@ -728,7 +720,7 @@ angular.module('app.controllers', [])
           } else {
             update_list_from_google(data.results[0]);
             if (arrayObjectIndexOf($rootScope.list.delivery_addresses, $scope.modal_address.metadata, "metadata") == -1) {
-              add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
+              $rootScope.list.delivery_addresses = add_to_array($scope.modal_address, $rootScope.list.delivery_addresses);
             }
             $scope.modal.hide();
           }
@@ -782,6 +774,11 @@ angular.module('app.controllers', [])
       });
       $rootScope.list.active = true;
       $rootScope.list.updated = new Date();
+      for (var i = 0; i < $rootScope.list.delivery_addresses.length; i++) {
+        $rootScope.list.delivery_addresses[i].metadata.reward = $rootScope.list.reward;
+        $rootScope.list.delivery_addresses[i].metadata.preferred_shops = $rootScope.list.preferred_shops;
+        $rootScope.list.delivery_addresses[i].metadata.estimated_weight = $rootScope.list.estimated_weight;
+      }
       $rootScope.list = backendlessify_shopping_list($rootScope.list);
       $rootScope.list.save(new Backendless.Async(listUpdated, onError));
     }
@@ -801,7 +798,7 @@ angular.module('app.controllers', [])
     }
 
     $scope.view_products = function () {
-      $state.go("tabsController.ProductsPublicatedList");
+      $state.go("tabsController.ProductsPublicatedList", { from_demander: "true" });
     }
 
   })
@@ -813,6 +810,13 @@ angular.module('app.controllers', [])
 
   .controller('ProductsPublicatedListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
+
+    if ($state.params.from_demander == null || $state.params.from_demander === "true") {
+      $scope.list = $rootScope.list;
+    } else {
+      $scope.list = $rootScope.shopper_list;
+    }
+
     $scope.view_product_details = function (product) {
       $state.go('tabsController.ElementDetails', { ProductId: product.objectId });
     }
@@ -821,22 +825,20 @@ angular.module('app.controllers', [])
 
   .controller('ElementDetailsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
+    $scope.product = { unit: {} };
+
     $scope.product_idx = arrayObjectIndexOf($rootScope.list.items, $state.params.ProductId, "objectId");
     $scope.units = getUnitsNames();
 
-    $scope.is_new_product = function () {
-      return $scope.product_idx == -1;
-    }
+    $scope.is_new_product = ($scope.product_idx == -1);
 
-    if ($scope.is_new_product()) {
+    if ($scope.is_new_product) {
       $scope.product = backendlessify_shopping_item(new window.Classes.ShoppingItem({ updated: new Date(), created: new Date(), unit: {} }));
     } else {
       $scope.product = angular.copy($rootScope.list.items[$scope.product_idx]);
       if ($scope.product.unit == null)
         $scope.product.unit = {};
     }
-
-    var idx = $rootScope.list_idx;
 
     onError = function (err) {
       $ionicLoading.hide();
@@ -905,7 +907,7 @@ angular.module('app.controllers', [])
         template: 'Please wait...'
       });
 
-      if ($scope.is_new_product()) {
+      if ($scope.is_new_product) {
         $rootScope.list.addItemToItems(backendlessify_shopping_item($scope.product));
       } else {
         $rootScope.list.items[$scope.product_idx] = $scope.product;
@@ -925,6 +927,7 @@ angular.module('app.controllers', [])
   })
 
   .controller('PublicatedListDetailsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+
 
   })
 
@@ -990,6 +993,10 @@ angular.module('app.controllers', [])
 
   .controller('UserProfileCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
+    $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+      viewData.enableBack = true;
+    });
+
     $scope.current_user = current_user;
 
     $scope.edit_profile = function () {
@@ -1003,9 +1010,14 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('FindListOnMapCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory, $cordovaGeolocation) {
+  .controller('FindListOnMapCtrl', function ($scope, $rootScope, $state, $compile, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory, $cordovaGeolocation) {
 
     var options = { timeout: 10000, enableHighAccuracy: true };
+
+    $scope.open_list = function (list_id) {
+      alert("ciao!");
+    }
+
 
     $ionicLoading.show({
       content: 'Getting current location...',
@@ -1050,28 +1062,97 @@ angular.module('app.controllers', [])
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
-      $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+      var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+      var markers = [];
 
-      //Wait until the map is loaded
-      google.maps.event.addListenerOnce($scope.map, 'idle', function () {
+      var infoWindow = new google.maps.InfoWindow();
+
+      var add_marker = function (_lat, _lng, metadata, permanent) {
 
         var marker = new google.maps.Marker({
-          map: $scope.map,
+          map: map,
           animation: google.maps.Animation.DROP,
-          position: latLng
-        });
-
-        var infoWindow = new google.maps.InfoWindow({
-          content: "Here I am!"
-          /*Per il DB: Cosa facciamo vedere nella window: Nome, mancia, peso stimato, Negozio in cui viene fatta la spesa (anche forse nome in vista).
-           Quando schiacci su window vai su pagina della spesa e poi se schiacci sul suo nome vai sul suo profilo*/
+          position: new google.maps.LatLng(_lat, _lng)
         });
 
         google.maps.event.addListener(marker, 'click', function () {
+          if (permanent == null || permanent == false)
+            infoWindow.setContent($compile(JSON.stringify(metadata) + '<br><button ng-click="open_list(' + metadata.linked_list_id + ')">Apri lista</button>')($scope)[0]);
+          else
+            infoWindow.setContent(metadata);
+
           infoWindow.open($scope.map, marker);
         }, function (error) {
           console.log("Could not get location");
         });
+
+        if (permanent == null || permanent == false)
+          markers.push(marker);
+
+      }
+
+      // Sets the map on all markers in the array.
+      function setMapOnAll(map) {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+        }
+      }
+
+      // Removes the markers from the map, but keeps them in the array.
+      function clearMarkers() {
+        setMapOnAll(null);
+      }
+
+      // Shows any markers currently in the array.
+      function showMarkers() {
+        setMapOnAll(map);
+      }
+
+      // Deletes all markers in the array by removing references to them.
+      function deleteMarkers() {
+        clearMarkers();
+        markers = [];
+      }
+
+      //Wait until the map is loaded
+      google.maps.event.addListenerOnce(map, 'idle', function () {
+
+        map.addListener('dragend', function () { update_geopoints(); });
+        map.addListener('zoom_changed', function () { update_geopoints(); });
+
+        google.maps.event.addListener(map, 'click', function () { infoWindow.close(); });
+
+        var update_geopoints = function () {
+          console.log("Updating geopoints...");
+          deleteMarkers();
+          var bounds = map.getBounds();
+          var ne = bounds.getNorthEast();
+          var sw = bounds.getSouthWest();
+          console.log("New bounds: (" + ne.lat() + " - " + ne.lng() + ") - (" + sw.lat() + " - " + sw.lng() + ")");
+          var geoQuery = {
+            searchRectangle: [ne.lat(), sw.lng(), sw.lat(), ne.lng()],
+            categories: ["lists"]
+          };
+          Backendless.Geo.find(geoQuery, new Backendless.Async(onGeoFind, onGeoError))
+        }
+
+        var onGeoFind = function (result) {
+          console.log("Found " + result.data.length + " geopoints");
+          for (var i = 0; i < result.data.length; i++) {
+            console.log("Geopoint: " + i + "> " + JSON.stringify(result.data[i]));
+            add_marker(result.data[i].latitude, result.data[i].longitude, result.data[i].metadata);
+          }
+        }
+
+        var onGeoError = function (result) {
+          console.log("Cannot update geopoints...");
+          navigator.notification.alert("Impossibile aggiornare le liste", null, "Oops", 'Ok');
+        }
+
+        add_marker(lat, long, "I'm here!", true);
+
+        update_geopoints();
+
       });
     }
 
@@ -1102,10 +1183,57 @@ angular.module('app.controllers', [])
 
     }
 
+    $scope.goto_list = function () {
+      $ionicHistory.nextViewOptions({
+        disableAnimate: true,
+        disableBack: true
+      });
+      $state.go("tabsController.MyListsToDo");
+    }
 
   })
 
   .controller('MyListsToDoCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+
+    $scope.accepted_lists = current_user.accepted_lists;
+    $scope.bidden_lists = current_user.bidden_lists;
+
+    $scope.goto_map = function () {
+      $ionicHistory.nextViewOptions({
+        disableAnimate: true,
+        disableBack: true
+      });
+      $state.go("tabsController.FindListOnMap");
+    }
+
+    $scope.view_bidden_list = function (list) {
+      $rootScope.shopper_list = list;
+      $state.go("tabsController.ShopperListView", { confirmed: false });
+    }
+
+  })
+
+  .controller('ShopperListViewCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+
+    $scope.list = $rootScope.shopper_list;
+
+    if ($state.params.confirmed == null || $state.params.confirmed === false) {
+      $scope.confirmed = false;
+    } else if ($state.params.confirmed === true) {
+      $scope.confirmed = true;
+    }
+
+    $scope.view_products = function () {
+      $state.go("tabsController.ProductsPublicatedList", { from_demander: "false" });
+    }
+
+    $scope.accept_list = function (list) {
+
+    }
+
+    $scope.withdraw_bid = function (list) {
+
+    }
 
   })
 
@@ -1131,6 +1259,11 @@ angular.module('app.controllers', [])
 
   .controller('SettingsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
+    $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+      viewData.enableBack = true;
+    });
+
+
     userLoggedOut = function () {
       $ionicHistory.nextViewOptions({
         disableBack: true,
@@ -1142,6 +1275,10 @@ angular.module('app.controllers', [])
     $scope.logout = function () {
       UserService.logout();
       Backendless.UserService.logout(new Backendless.Async(userLoggedOut, userLoggedOut));
+    }
+
+    $scope.goBack = function () {
+      $ionicHistory.goBack();
     }
 
   })
@@ -1169,6 +1306,8 @@ angular.module('app.controllers', [])
       console.log("user updated");
       console.log(saved_user);
       current_user = angular.copy(saved_user);
+      UserService.updateLists(current_user);
+      UserService.setUser(current_user);
       $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
       $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
       $rootScope.lists = current_user.lists;
