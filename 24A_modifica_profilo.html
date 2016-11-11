@@ -1,6 +1,5 @@
 <ion-view title="Modifica profilo" id="page24A" class="background-color-body">
-    <ion-nav-title class="title-custom">Modifica profilo</ion-nav-title>
-
+  <ion-nav-title class="title-custom">Modifica profilo</ion-nav-title>
 
   <ion-content class="overflow-scroll has-header">
     <div class="center" style="background-color:white">
@@ -8,39 +7,29 @@
       <img id="profile_image" class="image-circle" src="{{user.profile_pic_url}}" height="100" width="100" onerror="this.src=get_unknown_man_pic()">
       <h5 class="SF-thin" style="margin-top:0px; margin-bottom:0px; padding-top:10px; padding-bottom:10px">CARICA IMMAGINE PROFILO</h5>
     </div>
-
     <div class="list SF-regular">
       <div class="item item-divider SF-medium background-color-list-item-divider">
         <br>
         INFORMAZIONI PERSONALI
       </div>
-      <a class="item">
-        Nome
-        <span class="item-note SF-regular profile-element-content">{{user.first_name}}</span>
-      </a>
-      <a class="item">
-        Cognome
-        <span class="item-note SF-regular profile-element-content">{{user.last_name}}</span>
-      </a>
       <label class="item item-input">
-        <span class="input-label SF-regular" style="color:black">{{user.nationality}}</span>
+        <span class="input-label" style="color:black">Nazionalita'</span>
         <input type="text" ng-model="user.nationality">
       </label>
       <label class="item item-input">
-        <span class="input-label SF-regular" style="color:black">{{user.mobile_number}}</span>
+        <span class="input-label" style="color:black">Cellulare</span>
         <input type="text" ng-model="user.mobile_number">
       </label>
       <label class="item item-input">
-        <span class="input-label SF-regular" style="color:black">{{user.gender}}</span>
+        <span class="input-label" style="color:black">Sesso</span>
         <input type="text" ng-model="user.gender">
       </label>
       <label class="item item-input">
-        <span class="input-label SF-regular" style="color:black">{{user.birthday}}</span>
+        <span class="input-label" style="color:black">Data di nascita</span>
         <input type="text" ng-model="user.birthday">
       </label>
-
+    </div>
     <br>
-    <button class= "button button-block button-color SF-regular" ng-click="save_user()">Salva</button>
-
+    <button class="button button-block button-color SF-regular" ng-click="save_user()">Salva</button>
   </ion-content>
 </ion-view>

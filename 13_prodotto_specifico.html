@@ -1,13 +1,18 @@
 <ion-view title="Prodotto" id="page13" class="background-color-body">
-  <ion-nav-title class="title-custom">Prodotto</ion-nav-title>
-  <ion-content class="overflow-scroll has-header has-tabs">
+  <ion-nav-title class="title-custom">Info Prodotto</ion-nav-title>
+
+  <ion-nav-buttons side="right">
+    <button class="button icon ion-checkmark-round icon-color bar-button-color" ng-click="save_product()"></button>
+  </ion-nav-buttons>
+
+  <ion-content overflow-scroll="true" padding="true" class="has-header">
     <div class="list">
       <label class="item item-input">
-        <span class="input-label SF-regular">Prodotto<small><sup>*</sup><small></span>
+        <span class="input-label SF-regular">Prodotto<small><sup>*</sup></small></span>
         <input type="text" ng-model="product.name">
       </label>
       <label class="item item-input">
-        <span class="input-label SF-regular">Quantità<small><sup>*</sup><small></span>
+        <span class="input-label SF-regular">Quantità<small><sup>*</sup></small></span>
         <input type="text" ng-model="product.qty">
       </label>
       <label class="item item-input item-select">
@@ -34,7 +39,7 @@
       Salva
     </button>
 
-    <button class="button button-block button-assertive SF-regular" ng-click="delete_product()" ng-hide="is_new_product()">
+    <button class="button button-block button-assertive SF-regular" ng-click="delete_product()" ng-hide="is_new_product">
       Elimina
     </button>
   </ion-content>
