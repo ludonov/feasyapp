@@ -1060,7 +1060,7 @@ angular.module('app.controllers', [])
           animation: google.maps.Animation.DROP,
           position: latLng
         });
-yugy8t
+
         var infoWindow = new google.maps.InfoWindow({
           content: "Here I am!"
           /*Per il DB: Cosa facciamo vedere nella window: Nome, mancia, peso stimato, Negozio in cui viene fatta la spesa (anche forse nome in vista).
