@@ -661,11 +661,11 @@ angular.module('app.controllers', [])
       $scope.modal_address.latitude = result.geometry.location.lat();
       $scope.modal_address.longitude = result.geometry.location.lng();
       $scope.modal_address.metadata.formatted_address = result.formatted_address;
-      $scope.modal_address.metadata.linked_list_id = $rootScope.list.objectId;
-      $scope.modal_address.metadata.number_of_pieces = $rootScope.list.items.length;
-      $scope.modal_address.metadata.reward = $rootScope.list.reward;
-      $scope.modal_address.metadata.preferred_shops = $rootScope.list.preferred_shops;
-      $scope.modal_address.metadata.estimated_weight = $rootScope.list.estimated_weight;
+      //$scope.modal_address.metadata.linked_list_id = $rootScope.list.objectId;
+      //$scope.modal_address.metadata.number_of_pieces = $rootScope.list.items.length;
+      //$scope.modal_address.metadata.reward = $rootScope.list.reward;
+      //$scope.modal_address.metadata.preferred_shops = $rootScope.list.preferred_shops;
+      //$scope.modal_address.metadata.estimated_weight = $rootScope.list.estimated_weight;
       for (var j = 0; j < result.address_components.length; j++) {
         if (result.address_components[j].types[0] == "route")
           $scope.modal_address.metadata.street_name = result.address_components[j].short_name;
@@ -775,9 +775,7 @@ angular.module('app.controllers', [])
       $rootScope.list.active = true;
       $rootScope.list.updated = new Date();
       for (var i = 0; i < $rootScope.list.delivery_addresses.length; i++) {
-        $rootScope.list.delivery_addresses[i].metadata.reward = $rootScope.list.reward;
-        $rootScope.list.delivery_addresses[i].metadata.preferred_shops = $rootScope.list.preferred_shops;
-        $rootScope.list.delivery_addresses[i].metadata.estimated_weight = $rootScope.list.estimated_weight;
+        $rootScope.list.delivery_addresses[i].metadata.list = JSON.stringify($rootScope.list);
       }
       $rootScope.list = backendlessify_shopping_list($rootScope.list);
       $rootScope.list.save(new Backendless.Async(listUpdated, onError));
