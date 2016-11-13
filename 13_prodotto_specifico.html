@@ -5,7 +5,8 @@
     <button class="button icon ion-checkmark-round icon-color bar-button-color" ng-click="save_product()"></button>
   </ion-nav-buttons>
 
-  <ion-content overflow-scroll="true" padding="true" class="has-header">
+  <!--<ion-content overflow-scroll="true" padding="true" class="has-header">-->
+  <ion-scroll direction="y" style="right:0; bottom:0; left:0; position:absolute;" class="has-header" class="background-color-body">
     <div class="list">
       <label class="item item-input">
         <span class="input-label SF-regular">Prodotto<small><sup>*</sup></small></span>
@@ -42,5 +43,5 @@
     <button class="button button-block button-assertive SF-regular" ng-click="delete_product()" ng-hide="is_new_product">
       Elimina
     </button>
-  </ion-content>
+  </ion-scroll>
 </ion-view>
