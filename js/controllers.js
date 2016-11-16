@@ -1092,9 +1092,10 @@ angular.module('app.controllers', [])
         });
 
         google.maps.event.addListener(marker, 'click', function () {
-          if (permanent == null || permanent == false)
-            infoWindow.setContent($compile(JSON.stringify(metadata) + '<br><button ng-click="open_list(' + metadata.linked_list_id + ')">Apri lista</button>')($scope)[0]);
-          else
+          if (permanent == null || permanent == false) {
+            var content = '<button ng-click="open_list(\'' + metadata.linked_list_id + '\')">Apri lista</button>';
+            infoWindow.setContent($compile(content)($scope)[0]);
+          } else
             infoWindow.setContent(metadata);
 
           infoWindow.open($scope.map, marker);
