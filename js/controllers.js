@@ -53,8 +53,8 @@ angular.module('app.controllers', [])
   .controller('LoginCtrl', function ($scope, $rootScope,  $state, $ionicHistory, $q, UserService, DataExchange, $ionicLoading, $cordovaFileTransfer, $cordovaFile) {
 
     $scope.userdata = {
-      email: "info@feasyapp.com",
-      password: "prova"
+      email: "",
+      password: ""
     };
 
     $scope.fbUser = new Backendless.User();
@@ -151,7 +151,7 @@ angular.module('app.controllers', [])
 
     // This is the fail callback from the login method
     var fbLoginError = function (error) {
-      console.log('fbLoginError: ' + error);
+      console.warn('fbLoginError: ' + error);
       $ionicLoading.hide();
       navigator.notification.alert("FB login comunication: " + error.message, null, "Oops", "Ok");
     };
@@ -212,7 +212,7 @@ angular.module('app.controllers', [])
 
             }, function (fail) {
               // Fail get profile info
-              console.log('profile info fail', fail);
+              console.warn('profile info fail', fail);
             });
           //}else{
           //  $state.go('tabsController.Home');
@@ -239,25 +239,7 @@ angular.module('app.controllers', [])
           template: 'Logging in...'
         });
 
-        var skip_check = false;
-
-        if ($scope.userdata.name == "a")
-          skip_check = true;
-
-        if (!skip_check) {
-
-          // var facebookFieldsMapping = {
-          //   birthday: "birthday",
-          //   email: "email",
-          //   first_name: "first_name",
-          //   gender: "gender",
-          //   hometown: "hometown",
-          //   last_name: "last_name",
-          //   location: "currentlocation"
-          // };
-
-          current_user = UserStorage().findById(Backendless.UserService.login(user.email, user.password).objectId);
-        }
+        current_user = UserStorage().findById(Backendless.UserService.login(user.email, user.password).objectId);
 
         current_user.password = user.password;
         UserService.setUser(current_user);
@@ -325,8 +307,8 @@ angular.module('app.controllers', [])
 
     function gotErrorRegister(err) { // see more on error handling
       $ionicLoading.hide();
-      console.log("gotErrorRegister error message: " + err.message);
-      console.log("gotErrorRegister error code: " + err.statusCode);
+      console.warn("gotErrorRegister error message: " + err.message);
+      console.warn("gotErrorRegister error code: " + err.statusCode);
       navigator.notification.alert("Registration failed: " + err.message, null, "Info", "Ok");
     }
 
@@ -398,8 +380,11 @@ angular.module('app.controllers', [])
 
     $scope.userinput = {};
 
-    $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
-    $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+    $scope.$on("$ionicView.enter", function (event, data) {
+      console.log("Aggiornate liste attive e passive");
+      $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
+      $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+    });
 
     // $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
     //   viewData.enableBack = true;
@@ -456,7 +441,7 @@ angular.module('app.controllers', [])
 
       onError = function (err) {
         $ionicLoading.hide();
-        console.log("error" + err);
+        console.warn("error" + err);
         navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
       }
 
@@ -521,7 +506,7 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error" + err);
+      console.warn("error" + err);
       navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
@@ -640,7 +625,7 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error" + err);
+      console.warn("error" + err);
       navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
@@ -799,6 +784,42 @@ angular.module('app.controllers', [])
       $state.go("tabsController.ProductsPublicatedList", { from_demander: "true" });
     }
 
+    $scope.delete_list = function () {
+
+      if (!check_token())
+        return;
+
+      navigator.notification.confirm('Sei sicuro di voler eliminare questa lista?',
+        function (buttonIndex) {
+          if (buttonIndex == 1) {
+            console.log("user wants to delete list: " + $rootScope.list.objectId);
+            $ionicLoading.show({
+              template: 'Please wait...'
+            });
+            $rootScope.list.remove(new Backendless.Async(listRemoved, onError));
+          }
+        }, "Conferma", ["Sì", "No"]
+      );
+
+    }
+
+    onError = function (err) {
+      $ionicLoading.hide();
+      console.warn("error" + err);
+      navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
+    }
+
+    listRemoved = function (removed_list) {
+      console.log("list removed");
+      current_user.lists = ShoppingListStorage().find().data;
+      $rootScope.lists = current_user.lists;
+      $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
+      $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+      $ionicLoading.hide();
+      $rootScope.$apply();
+      $ionicHistory.goBack();
+    }
+
   })
 
   .controller('ConfirmedListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
@@ -840,7 +861,7 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error" + err);
+      console.warn("error" + err);
       navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
@@ -960,7 +981,7 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error" + err);
+      console.warn("error" + err);
       navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
@@ -1100,7 +1121,7 @@ angular.module('app.controllers', [])
 
           infoWindow.open($scope.map, marker);
         }, function (error) {
-          console.log("Could not get location");
+          console.warn("Could not get location");
         });
 
         if (permanent == null || permanent == false)
@@ -1127,7 +1148,7 @@ angular.module('app.controllers', [])
 
           infoWindow.open($scope.map, marker);
         }, function (error) {
-          console.log("Could not get location");
+          console.warn("Could not get location");
         });
 
         if (permanent == null || permanent == false)
@@ -1343,7 +1364,7 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error" + err);
+      console.warn("error" + err);
       navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
