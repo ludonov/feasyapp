@@ -1071,6 +1071,9 @@ angular.module('app.controllers', [])
       var mapOptions = {
         center: latLng,
         zoom: 15,
+        streetViewControl: false,
+        zoomControl: false,
+        mapTypeControl: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
@@ -1083,7 +1086,34 @@ angular.module('app.controllers', [])
 
         var marker = new google.maps.Marker({
           map: map,
-          animation: google.maps.Animation.DROP,
+          //animation: google.maps.Animation.DROP,
+          icon: 'images/map_marker.png',
+          position: new google.maps.LatLng(_lat, _lng)
+        });
+
+        google.maps.event.addListener(marker, 'click', function () {
+          if (permanent == null || permanent == false)
+            infoWindow.setContent($compile(JSON.stringify(metadata) + '<br><button ng-click="open_list(' + metadata.linked_list_id + ')">Apri lista</button>')($scope)[0]);
+          else
+            infoWindow.setContent(metadata);
+
+          infoWindow.open($scope.map, marker);
+        }, function (error) {
+          console.log("Could not get location");
+        });
+
+        if (permanent == null || permanent == false)
+          markers.push(marker);
+
+      }
+
+      var add_marker_position = function (_lat, _lng, metadata, permanent) {
+
+        var marker = new google.maps.Marker({
+          map: map,
+          //animation: google.maps.Animation.DROP,
+          icon: 'images/map_marker_circle.png',
+          zIndex:99999999,
           position: new google.maps.LatLng(_lat, _lng)
         });
 
@@ -1163,7 +1193,7 @@ angular.module('app.controllers', [])
           navigator.notification.alert("Impossibile aggiornare le liste", null, "Oops", 'Ok');
         }
 
-        add_marker(lat, long, "I'm here!", true);
+        add_marker_position(lat, long, "I'm here!", true);
 
         update_geopoints();
 
