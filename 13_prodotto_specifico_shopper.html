@@ -2,12 +2,17 @@
   <ion-nav-title class="title-custom">Info Prodotto</ion-nav-title>
 
   <ion-nav-buttons side="right">
-    <button class="button icon ion-checkmark-round icon-color bar-button-color" ng-click="save_product()" ng-show="from_demander"></button>
   </ion-nav-buttons>
 
   <!--<ion-content overflow-scroll="true" padding="true" class="has-header">-->
   <ion-scroll direction="y" style="right:0; bottom:0; left:0; position:absolute;" class="has-header" class="background-color-body">
     <div class="list">
+
+      <a class="item item-field">
+        Prodotto
+        <span class="item-note item-content" ng-model="product.name"></span>
+      </a>
+
       <label class="item item-input">
         <span class="input-label SF-regular">Prodotto<small><sup>*</sup></small></span>
         <input type="text" ng-model="product.name">
@@ -16,11 +21,9 @@
         <span class="input-label SF-regular">Quantità<small><sup>*</sup></small></span>
         <input type="text" ng-model="product.qty">
       </label>
-      <label class="item item-input item-select">
-        <div class="input-label">
-          Unità
-        </div>
-        <select ng-model="product.unit.unit_name" ng-options="x for x in units"></select>
+      <label class="item item-input">
+        <span class="input-label SF-regular">Unità<small><sup>*</sup></small></span>
+        <input type="text" ng-model="product.unit.unit_name">
       </label>
       <label class="item item-input">
         <span class="input-label SF-regular">Marca</span>
@@ -36,12 +39,5 @@
       </label>
     </div>
 
-    <button class="button button-block button-positive SF-regular" ng-click="save_product()" ng-show="from_demander">
-      Salva
-    </button>
-
-    <button class="button button-block button-assertive SF-regular" ng-click="delete_product()" ng-hide="is_new_product || !from_demander">
-      Elimina
-    </button>
   </ion-scroll>
 </ion-view>

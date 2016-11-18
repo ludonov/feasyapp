@@ -781,7 +781,7 @@ angular.module('app.controllers', [])
     }
 
     $scope.view_products = function () {
-      $state.go("tabsController.ProductsPublicatedList", { from_demander: "true" });
+      $state.go("tabsController.ProductsPublicatedListDemander");
     }
 
     $scope.delete_list = function () {
@@ -827,36 +827,39 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('ProductsPublicatedListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ProductsPublicatedListDemanderCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
-
-    if ($state.params.from_demander == null || $state.params.from_demander === "true") {
-      $scope.list = $rootScope.list;
-    } else {
-      $scope.list = $rootScope.shopper_list;
-    }
+    $scope.list = $rootScope.list;
 
     $scope.view_product_details = function (product) {
-      $state.go('tabsController.ElementDetails', { ProductId: product.objectId, from_demander: $state.params.from_demander });
+      $state.go('tabsController.ElementDetailsDemander', { ProductId: product.objectId });
     }
 
   })
 
-  .controller('ElementDetailsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ProductsPublicatedListShopperCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
-    $scope.from_demander = $state.params.from_demander == null || $state.params.from_demander == "" || $state.params.from_demander == "true" || $state.params.from_demander === true;
+    $scope.list = $rootScope.shopper_list;
+
+    $scope.view_product_details = function (product) {
+      $state.go('tabsController.ElementDetailsShopper', { ProductId: product.objectId });
+    }
+
+  })
+
+  .controller('ElementDetailsDemanderCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.product = { unit: {} };
 
-    $scope.product_idx = arrayObjectIndexOf(($scope.from_demander ? $rootScope.list : $rootScope.shopper_list).items, $state.params.ProductId, "objectId");
+    $scope.product_idx = arrayObjectIndexOf($rootScope.list.items, $state.params.ProductId, "objectId");
     $scope.units = getUnitsNames();
 
     $scope.is_new_product = ($scope.product_idx == -1);
 
-    if ($scope.is_new_product && !$scope.from_demander) {
+    if ($scope.is_new_product) {
       $scope.product = backendlessify_shopping_item(new window.Classes.ShoppingItem({ updated: new Date(), created: new Date(), unit: {} }));
     } else {
-      $scope.product = angular.copy(($scope.from_demander ? $rootScope.list : $rootScope.shopper_list).items[$scope.product_idx]);
+      $scope.product = angular.copy($rootScope.list.items[$scope.product_idx]);
       if ($scope.product.unit == null)
         $scope.product.unit = {};
     }
@@ -877,9 +880,6 @@ angular.module('app.controllers', [])
     }
 
     $scope.delete_product = function () {
-
-      if (!$scope.from_demander)
-        return;
 
       if (!check_token())
         return;
@@ -908,9 +908,6 @@ angular.module('app.controllers', [])
     }
 
     $scope.save_product = function () {
-
-      if (!$scope.from_demander)
-        return;
 
       if (!check_token())
         return;
@@ -943,6 +940,19 @@ angular.module('app.controllers', [])
       $rootScope.list.save(new Backendless.Async(listUpdated, onError));
     }
 
+  })
+
+  .controller('ElementDetailsShopperCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+
+    $scope.product = { unit: {} };
+
+    $scope.product_idx = arrayObjectIndexOf($rootScope.shopper_list.items, $state.params.ProductId, "objectId");
+    $scope.units = getUnitsNames();
+
+    $scope.product = angular.copy($rootScope.shopper_list.items[$scope.product_idx]);
+    if ($scope.product.unit == null)
+      $scope.product.unit = {};
+    
   })
 
   .controller('CandidateListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
@@ -1297,7 +1307,7 @@ angular.module('app.controllers', [])
     }
 
     $scope.view_products = function () {
-      $state.go("tabsController.ProductsPublicatedList", { from_demander: "false" });
+      $state.go("tabsController.ProductsPublicatedListShopper");
     }
 
     $scope.accept_list = function (list) {
