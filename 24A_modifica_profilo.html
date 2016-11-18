@@ -1,7 +1,7 @@
 <ion-view title="Modifica profilo" id="page24A" class="background-color-body">
   <ion-nav-title class="title-custom">Modifica profilo</ion-nav-title>
 
-  <ion-content class="overflow-scroll has-header">
+  <ion-scroll direction="y" style="right:0; bottom:0; left:0; position:absolute;" class="has-header" class="background-color-body">
     <div class="center" style="background-color:white">
       <br>
       <img id="profile_image" class="image-circle" src="{{user.profile_pic_url}}" height="100" width="100" onerror="this.src=get_unknown_man_pic()">
@@ -31,5 +31,5 @@
     </div>
     <br>
     <button class="button button-block button-color SF-regular" ng-click="save_user()">Salva</button>
-  </ion-content>
+  </ion-scroll>
 </ion-view>

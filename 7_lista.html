@@ -3,7 +3,8 @@
   <ion-nav-buttons side="secondary">
     <button class="button icon ion-plus icon-color bar-button-color" ui-sref="tabsController.ElementDetails"></button>
   </ion-nav-buttons>
-  <ion-content class="overflow-scroll has-header has-tabs">
+
+  <ion-scroll direction="y" style="right:0; bottom:0; left:0; position:absolute;" class="has-header has-tabs" class="background-color-body">
     <h5 class="SF-thin center" ng-show="list.items.length == 0">NESSUN PRODOTTO IN LISTA. AGGIUNGILO !</h5>
     <div class="list">
       <a class="item item-field" ui-sref="tabsController.ElementDetails({ProductId: item.objectId})" ng-repeat="item in list.items">
@@ -17,5 +18,5 @@
     <button class="button button-block button-assertive SF-regular" ng-click="delete_list()">
       Elimina
     </button>
-  </ion-content>
+  </ion-scroll>
 </ion-view>

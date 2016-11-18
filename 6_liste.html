@@ -3,7 +3,8 @@
   <ion-nav-buttons side="secondary">
     <button class="button icon ion-plus icon-color bar-button-color" ng-click="add_list()"></button>
   </ion-nav-buttons>
-  <ion-content class="overflow-scroll has-header has-tabs">
+
+  <ion-scroll direction="y" style="right:0; bottom:0; left:0; position:absolute;" class="has-header has-tabs" class="background-color-body">
     <div class="list">
       <div class="item item-divider item-title background-color-list-item-divider" style="border-top-color: transparent;">
         <br>
@@ -24,5 +25,5 @@
         <span class="item-note item-content">{{list.items.length}} pezzi</span>
       </a>
     </div>
-  </ion-content>
+  </ion-scroll>
 </ion-view>

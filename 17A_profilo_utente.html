@@ -3,7 +3,8 @@
   <ion-nav-buttons side="secondary">
     <button class="button button-small icon-color SF-regular bar-button-color" ng-click="edit_profile()">MODIFICA</button>
   </ion-nav-buttons>
-  <ion-content class="overflow-scroll has-header">
+  
+  <ion-scroll direction="y" style="right:0; bottom:0; left:0; position:absolute;" class="has-header" class="background-color-body">
     <div class="center">
       <h3 class="profile-personal-info" style="padding-top:10px; color:black">{{current_user.first_name}} {{current_user.last_name}}</h3>
       <img id="profile_image" class="image-circle" src="{{current_user.profile_pic_url}}" height="100" width="100" onerror="this.src=get_unknown_man_pic()">
@@ -84,5 +85,5 @@
         <i class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
     </div>
-  </ion-content>
+  </ion-scroll>
 </ion-view>
