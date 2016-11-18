@@ -844,17 +844,19 @@ angular.module('app.controllers', [])
 
   .controller('ElementDetailsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
+    $scope.from_demander = $state.params.from_demander == null || $state.params.from_demander === "true";
+
     $scope.product = { unit: {} };
 
-    $scope.product_idx = arrayObjectIndexOf($rootScope.list.items, $state.params.ProductId, "objectId");
+    $scope.product_idx = arrayObjectIndexOf(($scope.from_demander ? $rootScope.list : $rootScope.shopper_list).items, $state.params.ProductId, "objectId");
     $scope.units = getUnitsNames();
 
     $scope.is_new_product = ($scope.product_idx == -1);
 
-    if ($scope.is_new_product) {
+    if ($scope.is_new_product && !$scope.from_demander) {
       $scope.product = backendlessify_shopping_item(new window.Classes.ShoppingItem({ updated: new Date(), created: new Date(), unit: {} }));
     } else {
-      $scope.product = angular.copy($rootScope.list.items[$scope.product_idx]);
+      $scope.product = angular.copy(($scope.from_demander ? $rootScope.list : $rootScope.shopper_list).items[$scope.product_idx]);
       if ($scope.product.unit == null)
         $scope.product.unit = {};
     }
@@ -875,6 +877,9 @@ angular.module('app.controllers', [])
     }
 
     $scope.delete_product = function () {
+
+      if (!$scope.from_demander)
+        return;
 
       if (!check_token())
         return;
@@ -903,6 +908,9 @@ angular.module('app.controllers', [])
     }
 
     $scope.save_product = function () {
+
+      if (!$scope.from_demander)
+        return;
 
       if (!check_token())
         return;
@@ -1204,7 +1212,7 @@ angular.module('app.controllers', [])
         var onGeoFind = function (result) {
           console.log("Found " + result.data.length + " geopoints");
           for (var i = 0; i < result.data.length; i++) {
-            console.log("Geopoint: " + i + "> " + JSON.stringify(result.data[i]));
+            //console.log("Geopoint: " + i + "> " + JSON.stringify(result.data[i]));
             add_marker(result.data[i].latitude, result.data[i].longitude, result.data[i]);
           }
         }

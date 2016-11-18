@@ -146,7 +146,7 @@ angular.module('app.routes', [])
 
     .state('tabsController.ElementDetails', { /**/
 
-      url: '/ElementDetails/:ProductId',
+      url: '/ElementDetails/:ProductId/:from_demander',
       views: {
         'tab_liste': {
           templateUrl: '13_prodotto_specifico.html',
