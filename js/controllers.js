@@ -844,7 +844,7 @@ angular.module('app.controllers', [])
 
   .controller('ElementDetailsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
-    $scope.from_demander = $state.params.from_demander == null || $state.params.from_demander === "true";
+    $scope.from_demander = $state.params.from_demander == null || $state.params.from_demander == "" || $state.params.from_demander == "true" || $state.params.from_demander === true;
 
     $scope.product = { unit: {} };
 
