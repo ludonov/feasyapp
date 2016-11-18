@@ -1,12 +1,12 @@
 <ion-view title="Nome lista" id="page7" class="background-color-body">
   <ion-nav-title class="title-custom">{{list.name}}</ion-nav-title>
   <ion-nav-buttons side="secondary">
-    <button class="button icon ion-plus icon-color bar-button-color" ui-sref="tabsController.ElementDetails"></button>
+    <button class="button icon ion-plus icon-color bar-button-color" ui-sref="tabsController.ElementDetailsDemander"></button>
   </ion-nav-buttons>
   <ion-content class="overflow-scroll has-header has-tabs">
     <h5 class="SF-thin center" ng-show="list.items.length == 0">NESSUN PRODOTTO IN LISTA. AGGIUNGILO !</h5>
     <div class="list">
-      <a class="item item-field" ui-sref="tabsController.ElementDetails({ProductId: item.objectId})" ng-repeat="item in list.items">
+      <a class="item item-field" ui-sref="tabsController.ElementDetailsDemander({ProductId: item.objectId})" ng-repeat="item in list.items">
         {{item.name}}
         <span class="item-note item-content">{{item.qty}} {{item.unit.unit_name}}</span>
       </a>

@@ -10,33 +10,29 @@
 
       <a class="item item-field">
         Prodotto
-        <span class="item-note item-content" ng-model="product.name"></span>
+        <span class="item-note item-content">{{product.name}}</span>
+      </a>
+      <a class="item item-field">
+        Quantità
+        <span class="item-note item-content">{{product.qty}}</span>
+      </a>
+      <a class="item item-field">
+        Unità
+        <span class="item-note item-content">{{product.unit.unit_name}}</span>
+      </a>
+      <a class="item item-field">
+        Marca
+        <span class="item-note item-content">{{product.brand}}</span>
+      </a>
+      <a class="item item-field">
+        Fascia di prezzo
+        <span class="item-note item-content">{{product.price_range}}</span>
+      </a>
+      <a class="item item-field">
+        Altri dettagli
+        <span class="item-note item-content">{{product.other}}</span>
       </a>
 
-      <label class="item item-input">
-        <span class="input-label SF-regular">Prodotto<small><sup>*</sup></small></span>
-        <input type="text" ng-model="product.name">
-      </label>
-      <label class="item item-input">
-        <span class="input-label SF-regular">Quantità<small><sup>*</sup></small></span>
-        <input type="text" ng-model="product.qty">
-      </label>
-      <label class="item item-input">
-        <span class="input-label SF-regular">Unità<small><sup>*</sup></small></span>
-        <input type="text" ng-model="product.unit.unit_name">
-      </label>
-      <label class="item item-input">
-        <span class="input-label SF-regular">Marca</span>
-        <input type="text" ng-model="product.brand">
-      </label>
-      <label class="item item-input">
-        <span class="input-label SF-regular">Fascia di prezzo</span>
-        <input type="text" ng-model="product.price_range">
-      </label>
-      <label class="item item-input">
-        <span class="input-label SF-regular">Altri dettagli</span>
-        <input type="text" ng-model="product.other">
-      </label>
     </div>
 
   </ion-scroll>
