@@ -12,7 +12,7 @@ var current_user;
 var ionic_loading;
 var ionic_history;
 
-angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives', 'ngCordova'])
+angular.module('app', ['ionic', 'app.controllers.general', 'app.controllers.demander', 'app.controllers.shopper', 'app.routes', 'app.services', 'app.directives', 'ngCordova'])
 
 
 .run(function ($ionicPlatform, $ionicLoading, $ionicLoading, $cordovaFile) {

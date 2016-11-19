@@ -18,7 +18,7 @@ angular.module('app.routes', [])
 		.state('Startup', {
 		  url: '/Startup',
 		  templateUrl: '0_loading.html',
-      controller: 'StartupCtrl'
+		  controller: 'StartupCtrl'
 		})
 
 
@@ -85,18 +85,6 @@ angular.module('app.routes', [])
           controller: 'ListViewCtrl'
         }
       }
-    })
-
-    .state('tabsController.NewListElement', { /**/
-
-      url: '/NewListElement',
-      views: {
-        'tab_liste': {
-          templateUrl: '8_inserisci_nuovo_elemento.html',
-          controller: 'NewListElementCtrl'
-        }
-      }
-
     })
 
     .state('tabsController.PublicateList', { /**/
@@ -257,6 +245,25 @@ angular.module('app.routes', [])
       }
     })
 
+    .state('tabsController.ShopperListView', { /**/
+
+      url: '/ShopperListView/:confirmed',
+      views: {
+        'tab_trova': {
+          templateUrl: '28_spesario_info_lista.html',
+          controller: 'ShopperListViewCtrl'
+        }
+      }
+    })
+
+    .state('ListInfoFromMap', {
+
+      url: '/ListInfoFromMap',
+      templateUrl: '27_spesa_selezionata_da_mappa.html',
+      controller: 'ListInfoFromMapCtrl'
+
+    })
+
     .state('tabsController.ChatList', { /**/
 
       url: '/ChatList',
@@ -322,25 +329,6 @@ angular.module('app.routes', [])
       templateUrl: '26_termini_e_condizioni.html',
       controller: 'TermsAndConditionsCtrl'
 
-    })
-
-    .state('ListInfoFromMap', {
-
-      url: '/ListInfoFromMap',
-      templateUrl: '27_spesa_selezionata_da_mappa.html',
-      controller: 'ListInfoFromMapCtrl'
-
-    })
-
-    .state('tabsController.ShopperListView', { /**/
-
-      url: '/ShopperListView/:confirmed',
-      views: {
-        'tab_trova': {
-          templateUrl: '28_spesario_info_lista.html',
-          controller: 'ShopperListViewCtrl'
-        }
-      }
     });
 
   $urlRouterProvider.otherwise('/Startup');
