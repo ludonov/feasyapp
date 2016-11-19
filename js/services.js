@@ -13,17 +13,17 @@ angular.module('app.services', [])
         var _current_user = Backendless.UserService.getCurrentUser();
         if (_current_user != null)
           return _current_user;
-        else
-          return {};
-
-        //var _user = JSON.parse(window.localStorage.getItem("user") || '{}');
-        //if (_user.email == undefined || _user.password == undefined) {
+        //else
         //  return {};
-        //}
-        //var backend_user = Backendless.UserService.login(_user.email, _user.password, true);
+
+        var _user = JSON.parse(window.localStorage.getItem("user") || '{}');
+        if (_user.email == undefined || _user.password == undefined) {
+          return {};
+        }
+        var backend_user = Backendless.UserService.login(_user.email, _user.password, true);
         //var lists = null;
         //updateLists(backend_user);
-        //return backend_user;
+        return backend_user;
       } catch (e) {
         return {};
       }

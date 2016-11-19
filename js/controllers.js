@@ -453,7 +453,6 @@ angular.module('app.controllers', [])
         console.log("user updated, list added");
         console.log(saved_user);
         current_user.lists = saved_user.lists;
-        UserService.setUser(current_user);
         $rootScope.lists = current_user.lists;
         $scope.goto_list(current_user.lists[current_user.lists.length-1].objectId);
       }
@@ -1173,7 +1172,7 @@ angular.module('app.controllers', [])
 
         var update_geopoints = function () {
           console.log("Updating geopoints...");
-          deleteMarkers();
+          //deleteMarkers();
           var bounds = map.getBounds();
           var ne = bounds.getNorthEast();
           var sw = bounds.getSouthWest();
@@ -1187,8 +1186,13 @@ angular.module('app.controllers', [])
         }
 
         var onGeoFind = function (result) {
+
           console.log("Found " + result.data.length + " geopoints");
-          for (var i = 0; i < result.data.length; i++) {
+          for (var i in result.data) {
+            for (var k in markers) {
+              if ()
+              markers[i].setMap(map);
+            }
             //console.log("Geopoint: " + i + "> " + JSON.stringify(result.data[i]));
             add_marker(result.data[i].latitude, result.data[i].longitude, result.data[i]);
           }
@@ -1329,7 +1333,6 @@ angular.module('app.controllers', [])
       console.log("user updated");
       console.log(saved_user);
       current_user = angular.copy(saved_user);
-      UserService.setUser(current_user);
       $rootScope.lists = current_user.lists;
       $ionicHistory.goBack();
     }
