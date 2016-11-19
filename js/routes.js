@@ -133,24 +133,46 @@ angular.module('app.routes', [])
       }
     })
 
-    .state('tabsController.ProductsPublicatedList', { /**/
+    .state('tabsController.ProductsPublicatedListDemander', { /**/
 
-      url: '/ProductsPublicatedList/:from_demander',
+      url: '/ProductsPublicatedListDemander',
       views: {
         'tab_liste': {
           templateUrl: '12_lista_prodotti_gia_pubblicata.html',
-          controller: 'ProductsPublicatedListCtrl'
+          controller: 'ProductsPublicatedListDemanderCtrl'
         }
       }
     })
 
-    .state('tabsController.ElementDetails', { /**/
+    .state('tabsController.ProductsPublicatedListShopper', { /**/
 
-      url: '/ElementDetails/:ProductId',
+      url: '/ProductsPublicatedListShopper',
+      views: {
+        'tab_trova': {
+          templateUrl: '12_lista_prodotti_gia_pubblicata.html',
+          controller: 'ProductsPublicatedListShopperCtrl'
+        }
+      }
+    })
+
+    .state('tabsController.ElementDetailsDemander', { /**/
+
+      url: '/ElementDetailsDemander/:ProductId',
       views: {
         'tab_liste': {
-          templateUrl: '13_prodotto_specifico.html',
-          controller: 'ElementDetailsCtrl'
+          templateUrl: '13_prodotto_specifico_demander.html',
+          controller: 'ElementDetailsDemanderCtrl'
+        }
+      }
+    })
+
+    .state('tabsController.ElementDetailsShopper', { /**/
+
+      url: '/ElementDetailsShopper/:ProductId',
+      views: {
+        'tab_trova': {
+          templateUrl: '13_prodotto_specifico_shopper.html',
+          controller: 'ElementDetailsShopperCtrl'
         }
       }
     })

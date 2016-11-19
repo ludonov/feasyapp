@@ -276,10 +276,7 @@ function get_profile_pic_url() {
 function check_token() {
 
   if (!Backendless.UserService.isValidLogin()){
-    $ionicPopup.alert({
-      title: "Invalid login",
-      template: "Il login è invalido, forse hai effettuato l'accesso da un altro dispositivo. Si prega di rieffettuare il login."
-    });
+    navigator.notification.alert("Il login è invalido, forse hai effettuato l'accesso da un altro dispositivo. Si prega di rieffettuare il login.", null, "Invalid login", 'Ok');
     return false;
   } else {
     return true;
@@ -394,4 +391,99 @@ var geopoint_to_string = function(p) {
 
 var create_blank_geopoint = function() {
   return new Backendless.GeoPoint({categories : ["lists"], metadata : {street_name : null, post_code : null, city : null, nation : null, time_from : null, time_to : null, formatted_address : null}});
+}
+
+var add_list_to_geopoint_metadata = function (geopoint_metadata, list) {
+  if (geopoint_metadata == null)
+    geopoint_metadata = {};
+  //if (geopoint_metadata.list == null)
+  //  geopoint_metadata.list = {};
+  for (var property in list) {
+    if (list.hasOwnProperty(property) && (typeof list[property]) != 'function' && (!property.startsWith("_")) && !property.startsWith("$") && property != "chosen_candidate" && property != "candidates" && property != "delivery_addresses" && property != "created" && property != "updated") {
+      if (property == "items") {
+        geopoint_metadata.items = [];
+        for (var i = 0; i < list.items.length; i++) {
+          var item = list.items[i];
+          var new_item = {};
+          for (var item_property in item) {
+            if (item.hasOwnProperty(item_property) && (typeof item[item_property]) != 'function' && (!item_property.startsWith("_") || item_property == "___class") && !item_property.startsWith("$") && item_property != "created" && item_property != "updated" && item_property != "ownerId") {
+              if (item_property == "unit") {
+                if (item["unit"] != null) {
+                  new_item["unit"] = item["unit"];
+                  delete new_item.unit.created;
+                  delete new_item.unit.updated;
+                }
+              } else {
+                new_item[item_property] = item[item_property];
+              }
+            }
+          }
+          geopoint_metadata.items.push(new_item);
+        }
+      } else {
+        geopoint_metadata[property] = list[property];
+      }
+    }
+  }
+  return geopoint_metadata;
+}
+
+
+
+// localisation functions
+
+var geo_localise = function (cback, error_cback) {
+  if (cordova.plugins != null && cordova.plugins.diagnostic != null) {
+    cordova.plugins.diagnostic.isLocationEnabled(function (enabled) {
+      if (enabled) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          my_lat = position.coords.latitude;
+          my_lng = position.coords.longitude;
+          if (cback != null)
+            cback();
+        }, function (err) {
+          position_err(cback, error_cback);
+        }, { timeout: 5000, enableHighAccuracy: true });
+      } else {
+        position_err(cback, error_cback);
+      }
+    }, function (err) {
+      position_err(cback, error_cback);
+    });
+  } else {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      my_lat = position.coords.latitude;
+      my_lng = position.coords.longitude;
+      if (cback != null)
+        cback();
+    }, function (err) {
+      position_err(cback, error_cback);
+    }, { timeout: 5000, enableHighAccuracy: true });
+  }
+}
+
+var position_err = function (cback, error_cback) {
+  get_ip_data_and_position(function (data) {
+    if (data == null) {
+      if (error_cback != null) error_cback("null data");
+    } else {
+      if (data.lat == null || data.lon == null) {
+        if (data.city == null) {
+          if (error_cback != null) error_cback("null city");
+        } else {
+          geodecode_address(data.city, function (geodata) {
+            my_lat = geodata.results[0].geometry.location.lat();
+            my_lng = geodata.results[0].geometry.location.lng();
+            if (cback != null)
+              cback();
+          }, function () { error_cback("cannot geodecode_address"); });
+        }
+      } else {
+        my_lat = data.lat;
+        my_lng = data.lon;
+        if (cback != null)
+          cback();
+      }
+    }
+  }, function () { error_cback("cannot get_ip_data_and_position"); });
 }

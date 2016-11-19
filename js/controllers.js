@@ -47,14 +47,16 @@ angular.module('app.controllers', [])
 
     $timeout(hide_splash, 500);
 
+    geo_localise();
+
   })
 
 
   .controller('LoginCtrl', function ($scope, $rootScope,  $state, $ionicHistory, $q, UserService, DataExchange, $ionicLoading, $cordovaFileTransfer, $cordovaFile) {
 
     $scope.userdata = {
-      email: "info@feasyapp.com",
-      password: "prova"
+      email: "",
+      password: ""
     };
 
     $scope.fbUser = new Backendless.User();
@@ -87,7 +89,7 @@ angular.module('app.controllers', [])
             console.log("error code: " + err.statusCode);
             if (err.statusCode == 409) {
 
-              var temp_user = Backendless.UserService.login(usr.email, usr.password);
+              var temp_user = Backendless.UserService.login(usr.email, usr.password, true);
 
               temp_user.first_name = usr.first_name;
               temp_user.last_name = usr.last_name;
@@ -151,7 +153,7 @@ angular.module('app.controllers', [])
 
     // This is the fail callback from the login method
     var fbLoginError = function (error) {
-      console.log('fbLoginError: ' + error);
+      console.warn('fbLoginError: ' + error);
       $ionicLoading.hide();
       navigator.notification.alert("FB login comunication: " + error.message, null, "Oops", "Ok");
     };
@@ -212,7 +214,7 @@ angular.module('app.controllers', [])
 
             }, function (fail) {
               // Fail get profile info
-              console.log('profile info fail', fail);
+              console.warn('profile info fail', fail);
             });
           //}else{
           //  $state.go('tabsController.Home');
@@ -239,25 +241,7 @@ angular.module('app.controllers', [])
           template: 'Logging in...'
         });
 
-        var skip_check = false;
-
-        if ($scope.userdata.name == "a")
-          skip_check = true;
-
-        if (!skip_check) {
-
-          // var facebookFieldsMapping = {
-          //   birthday: "birthday",
-          //   email: "email",
-          //   first_name: "first_name",
-          //   gender: "gender",
-          //   hometown: "hometown",
-          //   last_name: "last_name",
-          //   location: "currentlocation"
-          // };
-
-          current_user = UserStorage().findById(Backendless.UserService.login(user.email, user.password).objectId);
-        }
+        current_user = UserStorage().findById(Backendless.UserService.login(user.email, user.password, true).objectId);
 
         current_user.password = user.password;
         UserService.setUser(current_user);
@@ -325,8 +309,8 @@ angular.module('app.controllers', [])
 
     function gotErrorRegister(err) { // see more on error handling
       $ionicLoading.hide();
-      console.log("gotErrorRegister error message: " + err.message);
-      console.log("gotErrorRegister error code: " + err.statusCode);
+      console.warn("gotErrorRegister error message: " + err.message);
+      console.warn("gotErrorRegister error code: " + err.statusCode);
       navigator.notification.alert("Registration failed: " + err.message, null, "Info", "Ok");
     }
 
@@ -398,8 +382,11 @@ angular.module('app.controllers', [])
 
     $scope.userinput = {};
 
-    $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
-    $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+    $scope.$on("$ionicView.enter", function (event, data) {
+      console.log("Aggiornate liste attive e passive");
+      $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
+      $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+    });
 
     // $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
     //   viewData.enableBack = true;
@@ -456,19 +443,16 @@ angular.module('app.controllers', [])
 
       onError = function (err) {
         $ionicLoading.hide();
-        console.log("error" + err);
+        console.warn("error" + err);
         navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
       }
 
       userUpdated = function (saved_user) {
+        $ionicLoading.hide();
         $scope.userinput = {};
         console.log("user updated, list added");
         console.log(saved_user);
-        current_user = angular.copy(saved_user);
-        UserService.updateLists(current_user);
-        UserService.setUser(current_user);
-        $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
-        $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+        current_user.lists = saved_user.lists;
         $rootScope.lists = current_user.lists;
         $scope.goto_list(current_user.lists[current_user.lists.length-1].objectId);
       }
@@ -521,7 +505,7 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error" + err);
+      console.warn("error" + err);
       navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
@@ -529,8 +513,8 @@ angular.module('app.controllers', [])
       console.log("list removed");
       current_user.lists = ShoppingListStorage().find().data;
       $rootScope.lists = current_user.lists;
-      $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
-      $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+      //$rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
+      //$rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
       $ionicLoading.hide();
       $rootScope.$apply();
       $ionicHistory.goBack();
@@ -640,7 +624,7 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error" + err);
+      console.warn("error" + err);
       navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
@@ -650,8 +634,8 @@ angular.module('app.controllers', [])
       current_user.lists[$rootScope.list_idx] = (saved_list);
       $rootScope.list = (saved_list);
       $rootScope.lists = current_user.lists;
-      $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
-      $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+      //$rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
+      //$rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
       $rootScope.$apply();
       $ionicLoading.hide();
       $ionicHistory.goBack(-2);
@@ -775,7 +759,7 @@ angular.module('app.controllers', [])
       $rootScope.list.active = true;
       $rootScope.list.updated = new Date();
       for (var i = 0; i < $rootScope.list.delivery_addresses.length; i++) {
-        $rootScope.list.delivery_addresses[i].metadata.list = JSON.stringify($rootScope.list);
+        $rootScope.list.delivery_addresses[i].metadata = add_list_to_geopoint_metadata($rootScope.list.delivery_addresses[i].metadata, $rootScope.list);
       }
       $rootScope.list = backendlessify_shopping_list($rootScope.list);
       $rootScope.list.save(new Backendless.Async(listUpdated, onError));
@@ -796,7 +780,43 @@ angular.module('app.controllers', [])
     }
 
     $scope.view_products = function () {
-      $state.go("tabsController.ProductsPublicatedList", { from_demander: "true" });
+      $state.go("tabsController.ProductsPublicatedListDemander");
+    }
+
+    $scope.delete_list = function () {
+
+      if (!check_token())
+        return;
+
+      navigator.notification.confirm('Sei sicuro di voler eliminare questa lista?',
+        function (buttonIndex) {
+          if (buttonIndex == 1) {
+            console.log("user wants to delete list: " + $rootScope.list.objectId);
+            $ionicLoading.show({
+              template: 'Please wait...'
+            });
+            $rootScope.list.remove(new Backendless.Async(listRemoved, onError));
+          }
+        }, "Conferma", ["Sì", "No"]
+      );
+
+    }
+
+    onError = function (err) {
+      $ionicLoading.hide();
+      console.warn("error" + err);
+      navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
+    }
+
+    listRemoved = function (removed_list) {
+      console.log("list removed");
+      current_user.lists = ShoppingListStorage().find().data;
+      $rootScope.lists = current_user.lists;
+      //$rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
+      //$rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+      $ionicLoading.hide();
+      $rootScope.$apply();
+      $ionicHistory.goBack();
     }
 
   })
@@ -806,22 +826,27 @@ angular.module('app.controllers', [])
 
   })
 
-  .controller('ProductsPublicatedListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ProductsPublicatedListDemanderCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
-
-    if ($state.params.from_demander == null || $state.params.from_demander === "true") {
-      $scope.list = $rootScope.list;
-    } else {
-      $scope.list = $rootScope.shopper_list;
-    }
+    $scope.list = $rootScope.list;
 
     $scope.view_product_details = function (product) {
-      $state.go('tabsController.ElementDetails', { ProductId: product.objectId });
+      $state.go('tabsController.ElementDetailsDemander', { ProductId: product.objectId });
     }
 
   })
 
-  .controller('ElementDetailsCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+  .controller('ProductsPublicatedListShopperCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+
+    $scope.list = $rootScope.shopper_list;
+
+    $scope.view_product_details = function (product) {
+      $state.go('tabsController.ElementDetailsShopper', { ProductId: product.objectId });
+    }
+
+  })
+
+  .controller('ElementDetailsDemanderCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.product = { unit: {} };
 
@@ -840,7 +865,7 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error" + err);
+      console.warn("error" + err);
       navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
@@ -886,11 +911,11 @@ angular.module('app.controllers', [])
       if (!check_token())
         return;
 
-      if ($scope.product.name == null) {
+      if ($scope.product.name == null || $scope.product.name.length == 0) {
         navigator.notification.alert("Inserisci il nome del prodotto", null, "Info", 'Ok');
         return;
       }
-      if ($scope.product.qty == null) {
+      if ($scope.product.qty == null || $scope.product.qty.length == 0) {
         navigator.notification.alert("Inserisci la quantità", null, "Info", 'Ok');
         return;
       }
@@ -914,6 +939,19 @@ angular.module('app.controllers', [])
       $rootScope.list.save(new Backendless.Async(listUpdated, onError));
     }
 
+  })
+
+  .controller('ElementDetailsShopperCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
+
+    $scope.product = { unit: {} };
+
+    $scope.product_idx = arrayObjectIndexOf($rootScope.shopper_list.items, $state.params.ProductId, "objectId");
+    $scope.units = getUnitsNames();
+
+    $scope.product = angular.copy($rootScope.shopper_list.items[$scope.product_idx]);
+    if ($scope.product.unit == null)
+      $scope.product.unit = {};
+    
   })
 
   .controller('CandidateListCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
@@ -960,7 +998,7 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error" + err);
+      console.warn("error" + err);
       navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
@@ -1012,55 +1050,33 @@ angular.module('app.controllers', [])
 
     var options = { timeout: 10000, enableHighAccuracy: true };
 
-    var onListFound = function (list) {
-      $ionicLoading.hide();
-      $rootScope.shopper_list = list;
-      $state.go("tabsController.ShopperListView", { confirmed: false });
-    }
+    var markers = {};
 
-    var onListNotFound = function (list) {
-      $ionicLoading.hide();
-      navigator.notification.alert("Impossibile trovare la lista", null, "Oops", 'Ok');
-    }
+    $scope.$on("$ionicView.enter", function (event, data) {
 
-    $scope.open_list = function (list_id) {
-      $ionicLoading.show({
-        content: 'Please wait...'
-      });
-      var list = ShoppingListStorage().findById(list_id, new Backendless.Async(onListFound, onListNotFound));
-    }
-
-
-    $ionicLoading.show({
-      content: 'Getting current location...',
-      showBackdrop: false
+      if (my_lat == null || my_lng == null) {
+        $ionicLoading.show({
+          content: 'Finding current location...',
+          showBackdrop: false
+        });
+        geo_localise(function () {
+          $ionicLoading.hide();
+          create_map(my_lat, my_lng);
+        }, function (err) {
+          ionic_loading.hide();
+          console.warn("Cannot find location: " + err);
+          navigator.notification.alert("Impossibile trovare la posizione attuale", function () {
+            $ionicHistory.goBack();
+          }, "Oops", 'Ok');
+        });
+      } else {
+        create_map(my_lat, my_lng);
+      }
     });
 
-    var definitive_err = function (err) {
-      $ionicLoading.hide();
-      navigator.notification.alert("Impossibile trovare la posizione attuale", function () {
-        $ionicHistory.goBack();
-      }, "Oops", 'Ok');
-    }
-
-    var position_err = function () {
-      get_ip_data_and_position(function (data) {
-        if (data == null) {
-          definitive_err();
-        } else {
-          if (data.lat == null || data.lon == null) {
-            if (data.city == null) {
-              definitive_err();
-            } else {
-              geodecode_address(data.city, function (geodata) {
-                create_map(geodata.results[0].geometry.location.lat(), geodata.results[0].geometry.location.lng());
-              }, definitive_err);
-            }
-          } else {
-            create_map(data.lat, data.lon);
-          }
-        }
-      }, definitive_err);
+    $scope.open_list = function (geopointId) {
+      $rootScope.shopper_list = markers[geopointId].geo_metadata;
+      $state.go("tabsController.ShopperListView", { confirmed: false });
     }
 
     var create_map = function (lat, long) {
@@ -1078,11 +1094,10 @@ angular.module('app.controllers', [])
       };
 
       var map = new google.maps.Map(document.getElementById("map"), mapOptions);
-      var markers = [];
 
       var infoWindow = new google.maps.InfoWindow();
 
-      var add_marker = function (_lat, _lng, metadata, permanent) {
+      var add_marker = function (_lat, _lng, geopoint, permanent) {
 
         var marker = new google.maps.Marker({
           map: map,
@@ -1092,52 +1107,41 @@ angular.module('app.controllers', [])
         });
 
         google.maps.event.addListener(marker, 'click', function () {
-          if (permanent == null || permanent == false) {
-            var content = '<button ng-click="open_list(\'' + metadata.linked_list_id + '\')">Apri lista</button>';
-            infoWindow.setContent($compile(content)($scope)[0]);
-          } else
-            infoWindow.setContent(metadata);
+          var content = '<button ng-click=\"open_list(\'' + geopoint.objectId + '\')\">Apri lista</button>';
+          infoWindow.setContent($compile(content)($scope)[0]);
 
           infoWindow.open($scope.map, marker);
         }, function (error) {
-          console.log("Could not get location");
+          console.warn("Could not get location");
         });
 
-        if (permanent == null || permanent == false)
-          markers.push(marker);
+        marker.geo_metadata = geopoint.metadata;
+        markers[geopoint.objectId] = marker;
 
       }
 
-      var add_marker_position = function (_lat, _lng, metadata, permanent) {
+      var add_marker_position = function (myLat, myLong, text, permanent) {
 
         var marker = new google.maps.Marker({
           map: map,
           //animation: google.maps.Animation.DROP,
           icon: 'images/map_marker_circle.png',
           zIndex:99999999,
-          position: new google.maps.LatLng(_lat, _lng)
+          position: new google.maps.LatLng(myLat, myLong)
         });
 
         google.maps.event.addListener(marker, 'click', function () {
-          if (permanent == null || permanent == false) {
-            var content = '<button ng-click="open_list(\'' + metadata.linked_list_id + '\')">Apri lista</button>';
-            infoWindow.setContent($compile(content)($scope)[0]);
-          } else
-            infoWindow.setContent(metadata);
-
+          infoWindow.setContent(text);
           infoWindow.open($scope.map, marker);
         }, function (error) {
-          console.log("Could not get location");
+          console.warn("Could not get location");
         });
-
-        if (permanent == null || permanent == false)
-          markers.push(marker);
 
       }
 
       // Sets the map on all markers in the array.
       function setMapOnAll(map) {
-        for (var i = 0; i < markers.length; i++) {
+        for (var i in markers) {
           markers[i].setMap(map);
         }
       }
@@ -1155,7 +1159,7 @@ angular.module('app.controllers', [])
       // Deletes all markers in the array by removing references to them.
       function deleteMarkers() {
         clearMarkers();
-        markers = [];
+        markers = {};
       }
 
       //Wait until the map is loaded
@@ -1168,7 +1172,7 @@ angular.module('app.controllers', [])
 
         var update_geopoints = function () {
           console.log("Updating geopoints...");
-          deleteMarkers();
+          //deleteMarkers();
           var bounds = map.getBounds();
           var ne = bounds.getNorthEast();
           var sw = bounds.getSouthWest();
@@ -1182,15 +1186,20 @@ angular.module('app.controllers', [])
         }
 
         var onGeoFind = function (result) {
+
           console.log("Found " + result.data.length + " geopoints");
-          for (var i = 0; i < result.data.length; i++) {
-            console.log("Geopoint: " + i + "> " + JSON.stringify(result.data[i]));
-            add_marker(result.data[i].latitude, result.data[i].longitude, result.data[i].metadata);
+          for (var i in result.data) {
+            for (var k in markers) {
+              if ()
+              markers[i].setMap(map);
+            }
+            //console.log("Geopoint: " + i + "> " + JSON.stringify(result.data[i]));
+            add_marker(result.data[i].latitude, result.data[i].longitude, result.data[i]);
           }
         }
 
         var onGeoError = function (result) {
-          console.log("Cannot update geopoints...");
+          console.log("Cannot update geopoints..." + result.message);
           navigator.notification.alert("Impossibile aggiornare le liste", null, "Oops", 'Ok');
         }
 
@@ -1199,33 +1208,6 @@ angular.module('app.controllers', [])
         update_geopoints();
 
       });
-    }
-
-    if (cordova.plugins != null && cordova.plugins.diagnostic != null) {
-      cordova.plugins.diagnostic.isLocationEnabled(function (enabled) {
-        if (enabled) {
-          navigator.geolocation.getCurrentPosition(function (position) {
-
-            create_map(position.coords.latitude, position.coords.longitude);
-
-          }, function (err) {
-            position_err();
-          }, { timeout: 5000, enableHighAccuracy: true });
-        } else {
-          position_err();
-        }
-      }, position_err);
-    } else {
-
-
-      navigator.geolocation.getCurrentPosition(function (position) {
-
-        create_map(position.coords.latitude, position.coords.longitude);
-
-      }, function (err) {
-        position_err();
-      });
-
     }
 
     $scope.goto_list = function () {
@@ -1269,7 +1251,7 @@ angular.module('app.controllers', [])
     }
 
     $scope.view_products = function () {
-      $state.go("tabsController.ProductsPublicatedList", { from_demander: "false" });
+      $state.go("tabsController.ProductsPublicatedListShopper");
     }
 
     $scope.accept_list = function (list) {
@@ -1343,7 +1325,7 @@ angular.module('app.controllers', [])
 
     onError = function (err) {
       $ionicLoading.hide();
-      console.log("error" + err);
+      console.warn("error" + err);
       navigator.notification.alert('Something has gone wrong: ' + err, null, 'Oops', 'Ok');
     }
 
@@ -1351,10 +1333,6 @@ angular.module('app.controllers', [])
       console.log("user updated");
       console.log(saved_user);
       current_user = angular.copy(saved_user);
-      UserService.updateLists(current_user);
-      UserService.setUser(current_user);
-      $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
-      $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
       $rootScope.lists = current_user.lists;
       $ionicHistory.goBack();
     }
@@ -1383,3 +1361,6 @@ var PaymentInfoStorage  = function () { return Backendless.Persistence.of(window
 var ShoppingListStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingList) };
 var ShoppingItemStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingItem) };
 var MeasureUnitsStorage = function () { return Backendless.Persistence.of(window.Classes.MeasureUnits) };
+
+var my_lat = null;
+var my_lng = null;

@@ -1,0 +1,39 @@
+<ion-view title="Prodotto" id="page13" class="background-color-body">
+  <ion-nav-title class="title-custom">Info Prodotto</ion-nav-title>
+
+  <ion-nav-buttons side="right">
+  </ion-nav-buttons>
+
+  <!--<ion-content overflow-scroll="true" padding="true" class="has-header">-->
+  <ion-scroll direction="y" style="right:0; bottom:0; left:0; position:absolute;" class="has-header" class="background-color-body">
+    <div class="list">
+
+      <a class="item item-field">
+        Prodotto
+        <span class="item-note item-content">{{product.name}}</span>
+      </a>
+      <a class="item item-field">
+        Quantità
+        <span class="item-note item-content">{{product.qty}}</span>
+      </a>
+      <a class="item item-field">
+        Unità
+        <span class="item-note item-content">{{product.unit.unit_name}}</span>
+      </a>
+      <a class="item item-field">
+        Marca
+        <span class="item-note item-content">{{product.brand}}</span>
+      </a>
+      <a class="item item-field">
+        Fascia di prezzo
+        <span class="item-note item-content">{{product.price_range}}</span>
+      </a>
+      <a class="item item-field">
+        Altri dettagli
+        <span class="item-note item-content">{{product.other}}</span>
+      </a>
+
+    </div>
+
+  </ion-scroll>
+</ion-view>

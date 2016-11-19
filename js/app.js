@@ -9,11 +9,13 @@
 var cordova_file, cordova_file_transfer;
 
 var current_user;
+var ionic_loading;
+var ionic_history;
 
 angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives', 'ngCordova'])
 
 
-.run(function ($ionicPlatform, $cordovaFile) {
+.run(function ($ionicPlatform, $ionicLoading, $ionicLoading, $cordovaFile) {
 
   $ionicPlatform.ready(function () {
 
@@ -44,6 +46,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services',
       console.log("cannot init facebookConnectPlugin");
     }
 
+    ionic_loading = $ionicLoading;
     cordova_file = $cordovaFile;
 
     $cordovaFile.getFreeDiskSpace()
