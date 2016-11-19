@@ -47,6 +47,8 @@ angular.module('app.controllers', [])
 
     $timeout(hide_splash, 500);
 
+    geo_localise();
+
   })
 
 
@@ -87,7 +89,7 @@ angular.module('app.controllers', [])
             console.log("error code: " + err.statusCode);
             if (err.statusCode == 409) {
 
-              var temp_user = Backendless.UserService.login(usr.email, usr.password);
+              var temp_user = Backendless.UserService.login(usr.email, usr.password, true);
 
               temp_user.first_name = usr.first_name;
               temp_user.last_name = usr.last_name;
@@ -239,7 +241,7 @@ angular.module('app.controllers', [])
           template: 'Logging in...'
         });
 
-        current_user = UserStorage().findById(Backendless.UserService.login(user.email, user.password).objectId);
+        current_user = UserStorage().findById(Backendless.UserService.login(user.email, user.password, true).objectId);
 
         current_user.password = user.password;
         UserService.setUser(current_user);
@@ -446,14 +448,12 @@ angular.module('app.controllers', [])
       }
 
       userUpdated = function (saved_user) {
+        $ionicLoading.hide();
         $scope.userinput = {};
         console.log("user updated, list added");
         console.log(saved_user);
-        current_user = angular.copy(saved_user);
-        UserService.updateLists(current_user);
+        current_user.lists = saved_user.lists;
         UserService.setUser(current_user);
-        //$rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
-        //$rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
         $rootScope.lists = current_user.lists;
         $scope.goto_list(current_user.lists[current_user.lists.length-1].objectId);
       }
@@ -1053,56 +1053,31 @@ angular.module('app.controllers', [])
 
     var markers = {};
 
-    var onListFound = function (list) {
-      $ionicLoading.hide();
-      $rootScope.shopper_list = list;
-      $state.go("tabsController.ShopperListView", { confirmed: false });
-    }
+    $scope.$on("$ionicView.enter", function (event, data) {
 
-    var onListNotFound = function (list) {
-      $ionicLoading.hide();
-      navigator.notification.alert("Impossibile trovare la lista", null, "Oops", 'Ok');
-    }
-
-    $scope.open_list = function (geopointId) {
-      $ionicLoading.show({
-        content: 'Please wait...'
-      });
-      //var list = ShoppingListStorage().findById(list_id, new Backendless.Async(onListFound, onListNotFound));
-      onListFound(markers[geopointId].geo_metadata);
-    }
-
-
-    $ionicLoading.show({
-      content: 'Getting current location...',
-      showBackdrop: false
+      if (my_lat == null || my_lng == null) {
+        $ionicLoading.show({
+          content: 'Finding current location...',
+          showBackdrop: false
+        });
+        geo_localise(function () {
+          $ionicLoading.hide();
+          create_map(my_lat, my_lng);
+        }, function (err) {
+          ionic_loading.hide();
+          console.warn("Cannot find location: " + err);
+          navigator.notification.alert("Impossibile trovare la posizione attuale", function () {
+            $ionicHistory.goBack();
+          }, "Oops", 'Ok');
+        });
+      } else {
+        create_map(my_lat, my_lng);
+      }
     });
 
-    var definitive_err = function (err) {
-      $ionicLoading.hide();
-      navigator.notification.alert("Impossibile trovare la posizione attuale", function () {
-        $ionicHistory.goBack();
-      }, "Oops", 'Ok');
-    }
-
-    var position_err = function () {
-      get_ip_data_and_position(function (data) {
-        if (data == null) {
-          definitive_err();
-        } else {
-          if (data.lat == null || data.lon == null) {
-            if (data.city == null) {
-              definitive_err();
-            } else {
-              geodecode_address(data.city, function (geodata) {
-                create_map(geodata.results[0].geometry.location.lat(), geodata.results[0].geometry.location.lng());
-              }, definitive_err);
-            }
-          } else {
-            create_map(data.lat, data.lon);
-          }
-        }
-      }, definitive_err);
+    $scope.open_list = function (geopointId) {
+      $rootScope.shopper_list = markers[geopointId].geo_metadata;
+      $state.go("tabsController.ShopperListView", { confirmed: false });
     }
 
     var create_map = function (lat, long) {
@@ -1146,30 +1121,22 @@ angular.module('app.controllers', [])
 
       }
 
-      var add_marker_position = function (_lat, _lng, metadata, permanent) {
+      var add_marker_position = function (myLat, myLong, text, permanent) {
 
         var marker = new google.maps.Marker({
           map: map,
           //animation: google.maps.Animation.DROP,
           icon: 'images/map_marker_circle.png',
           zIndex:99999999,
-          position: new google.maps.LatLng(_lat, _lng)
+          position: new google.maps.LatLng(myLat, myLong)
         });
 
         google.maps.event.addListener(marker, 'click', function () {
-          if (permanent == null || permanent == false) {
-            var content = '<button ng-click="open_list(\'' + metadata + '\')">Apri lista</button>';
-            infoWindow.setContent($compile(content)($scope)[0]);
-          } else
-            infoWindow.setContent(metadata);
-
+          infoWindow.setContent(text);
           infoWindow.open($scope.map, marker);
         }, function (error) {
           console.warn("Could not get location");
         });
-
-        //if (permanent == null || permanent == false)
-        //  markers.push(marker);
 
       }
 
@@ -1228,7 +1195,7 @@ angular.module('app.controllers', [])
         }
 
         var onGeoError = function (result) {
-          console.log("Cannot update geopoints...");
+          console.log("Cannot update geopoints..." + result.message);
           navigator.notification.alert("Impossibile aggiornare le liste", null, "Oops", 'Ok');
         }
 
@@ -1237,33 +1204,6 @@ angular.module('app.controllers', [])
         update_geopoints();
 
       });
-    }
-
-    if (cordova.plugins != null && cordova.plugins.diagnostic != null) {
-      cordova.plugins.diagnostic.isLocationEnabled(function (enabled) {
-        if (enabled) {
-          navigator.geolocation.getCurrentPosition(function (position) {
-
-            create_map(position.coords.latitude, position.coords.longitude);
-
-          }, function (err) {
-            position_err();
-          }, { timeout: 5000, enableHighAccuracy: true });
-        } else {
-          position_err();
-        }
-      }, position_err);
-    } else {
-
-
-      navigator.geolocation.getCurrentPosition(function (position) {
-
-        create_map(position.coords.latitude, position.coords.longitude);
-
-      }, function (err) {
-        position_err();
-      });
-
     }
 
     $scope.goto_list = function () {
@@ -1389,10 +1329,7 @@ angular.module('app.controllers', [])
       console.log("user updated");
       console.log(saved_user);
       current_user = angular.copy(saved_user);
-      UserService.updateLists(current_user);
       UserService.setUser(current_user);
-      //$rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
-      //$rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
       $rootScope.lists = current_user.lists;
       $ionicHistory.goBack();
     }
@@ -1421,3 +1358,6 @@ var PaymentInfoStorage  = function () { return Backendless.Persistence.of(window
 var ShoppingListStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingList) };
 var ShoppingItemStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingItem) };
 var MeasureUnitsStorage = function () { return Backendless.Persistence.of(window.Classes.MeasureUnits) };
+
+var my_lat = null;
+var my_lng = null;
