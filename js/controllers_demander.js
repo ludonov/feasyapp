@@ -3,14 +3,19 @@
   // 6_liste.html
   .controller('MyListsToCommissionCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
-    $rootScope.lists = (current_user.lists);
-
-    $scope.userinput = {};
 
     $scope.$on("$ionicView.enter", function (event, data) {
       console.log("Aggiornate liste attive e passive");
       $rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
       $rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+
+      $rootScope.list_id = null;
+      $rootScope.list_idx = null;
+      $rootScope.list = null;
+
+      $rootScope.lists = (current_user.lists);
+
+      $scope.userinput = {};
     });
 
     // $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
@@ -136,11 +141,10 @@
     }
 
     listRemoved = function (removed_list) {
-      console.log("list removed");
-      current_user.lists = ShoppingListStorage().find().data;
-      $rootScope.lists = current_user.lists;
-      //$rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
-      //$rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+      console.log("list <" + $rootScope.list.name + "> removed");
+      $rootScope.lists.splice($rootScope.list_idx, 1);
+      //current_user.lists = ShoppingListStorage().find().data;
+      current_user.lists = $rootScope.lists;
       $ionicLoading.hide();
       $rootScope.$apply();
       $ionicHistory.goBack();
@@ -380,11 +384,10 @@
     }
 
     listRemoved = function (removed_list) {
-      console.log("list removed");
-      current_user.lists = ShoppingListStorage().find().data;
-      $rootScope.lists = current_user.lists;
-      //$rootScope.no_active_list = arrayObjectIndexOf(current_user.lists, true, "active") == -1;
-      //$rootScope.no_passive_list = arrayObjectIndexOf(current_user.lists, false, "active") == -1;
+      console.log("list <" + $rootScope.list.name + "> removed");
+      $rootScope.lists.splice($rootScope.list_idx, 1);
+      //current_user.lists = ShoppingListStorage().find().data;
+      current_user.lists = $rootScope.lists;
       $ionicLoading.hide();
       $rootScope.$apply();
       $ionicHistory.goBack();
@@ -436,8 +439,10 @@
     itemRemoved = function (item_removed) {
       $ionicLoading.hide();
       console.log("item removed");
-      $rootScope.list = backendlessify_shopping_list(ShoppingListStorage().findById($rootScope.list_id));
+      //$rootScope.list = backendlessify_shopping_list(ShoppingListStorage().findById($rootScope.list_id));
+      $rootScope.list.items.splice($scope.product_idx, 1);
       $rootScope.lists[$rootScope.list_idx] = $rootScope.list;
+      current_user.lists = $rootScope.lists;
       $rootScope.$apply();
       $ionicHistory.goBack();
     }
@@ -447,17 +452,14 @@
       if (!check_token())
         return;
 
-      var index = arrayObjectIndexOf($rootScope.list.items, $scope.product.objectId, "objectId");
-      if (index != -1) {
-        $ionicLoading.show({
-          template: 'Please wait...'
-        });
-        $scope.product.remove(new Backendless.Async(itemRemoved, onError));
-      } else {
-        navigator.notification.alert("Problem while deleting: cannot find the product.", function () {
-          $ionicHistory.goBack();
-        }, "Info", 'Ok');
-      }
+      if ($scope.is_new_product)
+        return;
+
+      $ionicLoading.show({
+        template: 'Please wait...'
+      });
+      ShoppingItemStorage().remove($scope.product, new Backendless.Async(itemRemoved, onError));
+
     }
 
     listUpdated = function (saved_list) {

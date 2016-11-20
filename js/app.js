@@ -6,14 +6,23 @@
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
 
-var cordova_file, cordova_file_transfer;
-
 var current_user;
-var ionic_loading;
-var ionic_history;
+
+var cordova_file, cordova_file_transfer;
+var ionic_loading, ionic_history;
+
+var my_lat = null;
+var my_lng = null;
+
+var UserStorage = function () { return Backendless.Persistence.of(Backendless.User) };
+var AddressInfoStorage = function () { return Backendless.Persistence.of(window.Classes.AddressInfo) };
+var PaymentInfoStorage = function () { return Backendless.Persistence.of(window.Classes.PaymentInfo) };
+var ShoppingListStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingList) };
+var ShoppingItemStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingItem) };
+var MeasureUnitsStorage = function () { return Backendless.Persistence.of(window.Classes.MeasureUnits) };
+var CandidateInfoStorage = function () { return Backendless.Persistence.of(window.Classes.CandidateInfo) };
 
 angular.module('app', ['ionic', 'app.controllers.general', 'app.controllers.demander', 'app.controllers.shopper', 'app.routes', 'app.services', 'app.directives', 'ngCordova'])
-
 
 .run(function ($ionicPlatform, $ionicLoading, $ionicLoading, $cordovaFile) {
 

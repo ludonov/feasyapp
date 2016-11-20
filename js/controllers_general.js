@@ -489,13 +489,3 @@ angular.module('app.controllers.general', [])
   .run(['UserService', function (UserService) {
     current_user = UserService.getUser();
   }]);
-
-var UserStorage         = function () { return Backendless.Persistence.of(Backendless.User) };
-var AddressInfoStorage  = function () { return Backendless.Persistence.of(window.Classes.AddressInfo) };
-var PaymentInfoStorage  = function () { return Backendless.Persistence.of(window.Classes.PaymentInfo) };
-var ShoppingListStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingList) };
-var ShoppingItemStorage = function () { return Backendless.Persistence.of(window.Classes.ShoppingItem) };
-var MeasureUnitsStorage = function () { return Backendless.Persistence.of(window.Classes.MeasureUnits) };
-
-var my_lat = null;
-var my_lng = null;

@@ -257,7 +257,54 @@
     }
 
     $scope.accept_list = function (list) {
+      var candy = new window.Classes.CandidateInfo({
+        "birthday": current_user.birthday,
+        "gender": current_user.gender,
+        "first_name": current_user.first_name,
+        "last_name": current_user.last_name,
+        "full_name": current_user.full_name,
+        "nationality": current_user.nationality,
+        "profile_pic_url": current_user.profile_pic_url,
+        "rating": current_user.rating,
+        "accomplished_tasks": current_user.accomplished_tasks,
+        "requested_tasks": current_user.requested_tasks,
+        "list_id": list.objectId
+      });
 
+      $ionicLoading.show({
+        content: 'Please wait...',
+        showBackdrop: false
+      });
+
+      var temp_usr = angular.copy(current_user);
+      if (temp_usr.bidden_lists == null)
+        temp_usr.bidden_lists = [];
+      temp_usr.bidden_lists.push(list);
+      var temp_usr = backendlessify_user(temp_usr);
+      Backendless.UserService.update(temp_usr, new Backendless.Async(userUpdated, onError));
+    }
+
+    var userUpdated = function (candy_saved) {
+      $ionicLoading.hide();
+      console.log("user updated, bidden list added");
+      console.log(saved_user);
+      current_user.lists = saved_user.lists;
+      $rootScope.lists = current_user.lists;
+      $scope.goto_list(current_user.lists[current_user.lists.length - 1].objectId);
+    }
+
+    var UserError = function (err) {
+      $ionicLoading.hide();
+      var candies = CandidateInfoStorage().find();
+    }
+
+    var CandySaved = function (candy_saved) {
+      $ionicLoading.hide();
+    }
+
+    var CandyError = function (err) {
+      $ionicLoading.hide();
+      var candies = CandidateInfoStorage().find();
     }
 
     $scope.withdraw_bid = function (list) {
