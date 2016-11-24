@@ -165,7 +165,7 @@
       var bounds = map.getBounds();
       var ne = bounds.getNorthEast();
       var sw = bounds.getSouthWest();
-      console.log("New bounds: (" + ne.lat() + " - " + ne.lng() + ") - (" + sw.lat() + " - " + sw.lng() + ")");
+      //console.log("New bounds: (" + ne.lat() + " - " + ne.lng() + ") - (" + sw.lat() + " - " + sw.lng() + ")");
       var geoQuery = {
         searchRectangle: [ne.lat(), sw.lng(), sw.lat(), ne.lng()],
         categories: ["lists"],
@@ -222,9 +222,11 @@
 
   // 18B_fai_la_spesa.html
   .controller('MyListsToDoCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
-
-    $scope.accepted_lists = current_user.accepted_lists;
-    $scope.bidden_lists = current_user.bidden_lists;
+    
+    $scope.$on("$ionicView.enter", function (event, data) {
+      $scope.accepted_lists = current_user.accepted_lists;
+      $scope.bidden_lists = current_user.bidden_lists;
+    });
 
     $scope.goto_map = function () {
       $ionicHistory.nextViewOptions({
@@ -245,18 +247,16 @@
   .controller('ShopperListViewCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
 
     $scope.list = $rootScope.shopper_list;
+    $scope.confirmed = !($state.params.confirmed == null || $state.params.confirmed === false || $state.params.confirmed == "false");
 
-    if ($state.params.confirmed == null || $state.params.confirmed === false) {
-      $scope.confirmed = false;
-    } else if ($state.params.confirmed === true) {
-      $scope.confirmed = true;
-    }
+    $scope.list.___class = "ShoppingList";
+    $scope.list.active = true;
 
     $scope.view_products = function () {
       $state.go("tabsController.ProductsPublicatedListShopper");
     }
 
-    $scope.accept_list = function (list) {
+    $scope.accept_list = function () {
       var candy = new window.Classes.CandidateInfo({
         "birthday": current_user.birthday,
         "gender": current_user.gender,
@@ -268,7 +268,7 @@
         "rating": current_user.rating,
         "accomplished_tasks": current_user.accomplished_tasks,
         "requested_tasks": current_user.requested_tasks,
-        "list_id": list.objectId
+        "list_id": $scope.list.objectId
       });
 
       $ionicLoading.show({
@@ -276,38 +276,42 @@
         showBackdrop: false
       });
 
+      candy.save(new Backendless.Async(candySaved, candyError));
+
+    }
+
+    var candySaved = function (saved_candy) {
       var temp_usr = angular.copy(current_user);
       if (temp_usr.bidden_lists == null)
         temp_usr.bidden_lists = [];
-      temp_usr.bidden_lists.push(list);
+      temp_usr.bidden_lists.push(new window.Classes.ShoppingList({ "objectId": $scope.list.objectId, "ownerId": $scope.list.ownerId }));
+      if (temp_usr.candidatures == null)
+        temp_usr.candidatures = [];
+      temp_usr.candidatures.push(saved_candy);
       var temp_usr = backendlessify_user(temp_usr);
       Backendless.UserService.update(temp_usr, new Backendless.Async(userUpdated, onError));
     }
 
-    var userUpdated = function (candy_saved) {
+    var candyError = function (err) {
+      $ionicLoading.hide();
+      console.warn("Cannot save candy: " + err.message);
+    }
+
+    var userUpdated = function (saved_user) {
       $ionicLoading.hide();
       console.log("user updated, bidden list added");
       console.log(saved_user);
-      current_user.lists = saved_user.lists;
+      current_user = saved_user;
       $rootScope.lists = current_user.lists;
-      $scope.goto_list(current_user.lists[current_user.lists.length - 1].objectId);
+      $state.go("tabsController.MyListsToDo");
     }
 
-    var UserError = function (err) {
+    var onError = function (err) {
       $ionicLoading.hide();
-      var candies = CandidateInfoStorage().find();
+      console.warn("Cannot update user: " + err.message);
     }
 
-    var CandySaved = function (candy_saved) {
-      $ionicLoading.hide();
-    }
-
-    var CandyError = function (err) {
-      $ionicLoading.hide();
-      var candies = CandidateInfoStorage().find();
-    }
-
-    $scope.withdraw_bid = function (list) {
+    $scope.withdraw_bid = function () {
 
     }
 

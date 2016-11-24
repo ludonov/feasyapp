@@ -1,8 +1,8 @@
 
-var APPLICATION_ID = 'AF27BD78-71F2-8608-FFE8-B321A0083F00';
-var SECRET_KEY = '27B58D04-CE23-A579-FFBD-A31B13136900';
+var APPLICATION_ID = 'B4A6E251-561B-FEC4-FFFE-5BD9A26DB600';
+var SECRET_KEY = '7146EA6D-CE63-970D-FF6D-9DBBF2EEED00';
 var VERSION = 'v1';
-Backendless.serverURL = "http://feasy.westeurope.cloudapp.azure.com:80/api";
+Backendless.serverURL = "https://api.backendless.com";
 
 Backendless.initApp(APPLICATION_ID, SECRET_KEY, VERSION);
 
@@ -38,29 +38,39 @@ function cleanPrivateRelations(data) {
 }
 
 $rootScope.Classes = {
-  PaymentInfo: function PaymentInfo(args) {
+  CandidateInfo: function CandidateInfo(args) {
     args = args || {};
 
-    this.ownerId = args.ownerId || null;
-    this.cvv = args.cvv || null;
-    this.sub_type = args.sub_type || null;
-    this.updated = args.updated || null;
-    this.type = args.type || null;
+    this.full_name = args.full_name || null;
+    this.accomplished_tasks = args.accomplished_tasks || null;
+    this.gender = args.gender || null;
+    this.conditions_max_value = args.conditions_max_value || null;
+    this.nationality = args.nationality || null;
+    this.conditions_weight = args.conditions_weight || null;
+    this.birthday = args.birthday || null;
     this.created = args.created || null;
-    this.card_number = args.card_number || null;
-    this.holder_name = args.holder_name || null;
+    this.updated = args.updated || null;
+    this.profile_pic_url = args.profile_pic_url || null;
     this.objectId = args.objectId || null;
-    this.expiry_date = args.expiry_date || null;
+    this.last_name = args.last_name || null;
+    this.list_id = args.list_id || null;
+    this.conditions_reward = args.conditions_reward || null;
+    this.ownerId = args.ownerId || null;
+    this.rating = args.rating || null;
+    this.requested_tasks = args.requested_tasks || null;
+    this.accepted_tasks = args.accepted_tasks || null;
+    this.conditions_shops = args.conditions_shops || null;
+    this.first_name = args.first_name || null;
 
     this._private_relations = [];
     this._private_geoRelations = [];
     this._private_dates = [
-    "updated",
-    "created"];
-    this.___class = "PaymentInfo";
+    "created",
+    "updated"];
+    this.___class = "CandidateInfo";
 
 
-    var storage = Backendless.Persistence.of(PaymentInfo);
+    var storage = Backendless.Persistence.of(CandidateInfo);
 
     this.save = function (async) {
       cleanPrivateRelations(this);
@@ -81,37 +91,37 @@ $rootScope.Classes = {
   }, ShoppingList: function ShoppingList(args) {
     args = args || {};
 
-    this.active = args.active || false;
-    this.preferred_shops = args.preferred_shops || null;
+    this.comments = args.comments || null;
+    this.max_value = args.max_value || null;
     this.delivery_hours = args.delivery_hours || null;
-    this.reward = args.reward || null;
     this.ownerId = args.ownerId || null;
     this.objectId = args.objectId || null;
-    this.name = args.name || null;
-    this.comments = args.comments || null;
-    this.estimated_value = args.estimated_value || null;
-    this.max_value = args.max_value || null;
-    this.created = args.created || null;
-    this.updated = args.updated || null;
+    this.reward = args.reward || null;
     this.estimated_weight = args.estimated_weight || null;
+    this.preferred_shops = args.preferred_shops || null;
+    this.active = args.active || null;
+    this.name = args.name || null;
+    this.updated = args.updated || null;
+    this.created = args.created || null;
+    this.estimated_value = args.estimated_value || null;
 
     this._private_relations = [
-    "items",
+    "candidates",
     "chosen_candidate",
-    "candidates"];
+    "items"];
     this._private_geoRelations = [
     "delivery_addresses"];
     this._private_dates = [
-    "created",
-    "updated"];
+    "updated",
+    "created"];
     this.___class = "ShoppingList";
 
 
-    this.items = args.items || null;
+    this.candidates = args.candidates || null;
 
     this.chosen_candidate = args.chosen_candidate || null;
 
-    this.candidates = args.candidates || null;
+    this.items = args.items || null;
 
     var storage = Backendless.Persistence.of(ShoppingList);
 
@@ -130,45 +140,6 @@ $rootScope.Classes = {
       return Backendless.Persistence.describe(this.___class);
     };
 
-
-    this.addItemToItems = function (item) {
-      if (this.items == null)
-        this.items = [];
-
-      this.items.push(item);
-      return this.items;
-    };
-
-    this.removeItemFromItems = function (item, async) {
-      if (this.items == null)
-        storage.loadRelations(this, ['items']);
-
-      for (var j = 0; j < this.items.length; j++) {
-        if (this.items[j].objectId === item.objectId) {
-          this.items.splice(j, j + 1);
-          this.save(async);
-          break;
-        }
-      }
-    };
-    this.removeAllItems = function (async) {
-      this.items = null;
-      this.save(async);
-    };
-
-    this.getItems = function () {
-      if (this.items == null)
-        storage.loadRelations(this, ['items']);
-
-      return this.items;
-    };
-
-    this.getChosen_candidate = function () {
-      if (this.chosen_candidate == null)
-        storage.loadRelations(this, ['chosen_candidate']);
-
-      return this.chosen_candidate;
-    };
 
     this.addItemToCandidates = function (item) {
       if (this.candidates == null)
@@ -202,25 +173,104 @@ $rootScope.Classes = {
       return this.candidates;
     };
 
-  }, ShoppingItem: function ShoppingItem(args) {
+    this.getChosen_candidate = function () {
+      if (this.chosen_candidate == null)
+        storage.loadRelations(this, ['chosen_candidate']);
+
+      return this.chosen_candidate;
+    };
+
+    this.addItemToItems = function (item) {
+      if (this.items == null)
+        this.items = [];
+
+      this.items.push(item);
+      return this.items;
+    };
+
+    this.removeItemFromItems = function (item, async) {
+      if (this.items == null)
+        storage.loadRelations(this, ['items']);
+
+      for (var j = 0; j < this.items.length; j++) {
+        if (this.items[j].objectId === item.objectId) {
+          this.items.splice(j, j + 1);
+          this.save(async);
+          break;
+        }
+      }
+    };
+    this.removeAllItems = function (async) {
+      this.items = null;
+      this.save(async);
+    };
+
+    this.getItems = function () {
+      if (this.items == null)
+        storage.loadRelations(this, ['items']);
+
+      return this.items;
+    };
+
+  }, PaymentInfo: function PaymentInfo(args) {
     args = args || {};
 
     this.created = args.created || null;
+    this.cvv = args.cvv || null;
+    this.type = args.type || null;
+    this.updated = args.updated || null;
+    this.holder_name = args.holder_name || null;
+    this.card_number = args.card_number || null;
+    this.sub_type = args.sub_type || null;
+    this.expiry_date = args.expiry_date || null;
+    this.ownerId = args.ownerId || null;
     this.objectId = args.objectId || null;
-    this.qty = args.qty || null;
-    this.price_range = args.price_range || null;
-    this.name = args.name || null;
+
+    this._private_relations = [];
+    this._private_geoRelations = [];
+    this._private_dates = [
+    "created",
+    "updated"];
+    this.___class = "PaymentInfo";
+
+
+    var storage = Backendless.Persistence.of(PaymentInfo);
+
+    this.save = function (async) {
+      cleanPrivateRelations(this);
+      storage.save(this, async);
+    };
+
+    this.remove = function (async) {
+      var result = storage.remove(this, async);
+      this.objectId = null;
+      return result;
+    };
+
+    this._private_describeClass = function () {
+      return Backendless.Persistence.describe(this.___class);
+    };
+
+
+  }, ShoppingItem: function ShoppingItem(args) {
+    args = args || {};
+
     this.ownerId = args.ownerId || null;
     this.updated = args.updated || null;
-    this.other = args.other || null;
     this.brand = args.brand || null;
+    this.objectId = args.objectId || null;
+    this.name = args.name || null;
+    this.qty = args.qty || null;
+    this.price_range = args.price_range || null;
+    this.created = args.created || null;
+    this.other = args.other || null;
 
     this._private_relations = [
     "unit"];
     this._private_geoRelations = [];
     this._private_dates = [
-    "created",
-    "updated"];
+    "updated",
+    "created"];
     this.___class = "ShoppingItem";
 
 
@@ -251,69 +301,20 @@ $rootScope.Classes = {
       return this.unit;
     };
 
-  }, CandidateInfo: function CandidateInfo(args) {
-    args = args || {};
-
-    this.conditions_max_value = args.conditions_max_value || null;
-    this.created = args.created || null;
-    this.gender = args.gender || null;
-    this.rating = args.rating || null;
-    this.ownerId = args.ownerId || null;
-    this.accomplished_tasks = args.accomplished_tasks || null;
-    this.birthday = args.birthday || null;
-    this.last_name = args.last_name || null;
-    this.requested_tasks = args.requested_tasks || null;
-    this.nationality = args.nationality || null;
-    this.list_id = args.list_id || null;
-    this.conditions_shops = args.conditions_shops || null;
-    this.profile_pic_url = args.profile_pic_url || null;
-    this.conditions_weight = args.conditions_weight || null;
-    this.conditions_reward = args.conditions_reward || null;
-    this.objectId = args.objectId || null;
-    this.first_name = args.first_name || null;
-    this.full_name = args.full_name || null;
-    this.updated = args.updated || null;
-
-    this._private_relations = [];
-    this._private_geoRelations = [];
-    this._private_dates = [
-    "created",
-    "updated"];
-    this.___class = "CandidateInfo";
-
-
-    var storage = Backendless.Persistence.of(CandidateInfo);
-
-    this.save = function (async) {
-      cleanPrivateRelations(this);
-      storage.save(this, async);
-    };
-
-    this.remove = function (async) {
-      var result = storage.remove(this, async);
-      this.objectId = null;
-      return result;
-    };
-
-    this._private_describeClass = function () {
-      return Backendless.Persistence.describe(this.___class);
-    };
-
-
   }, MeasureUnits: function MeasureUnits(args) {
     args = args || {};
 
-    this.objectId = args.objectId || null;
+    this.updated = args.updated || null;
     this.ownerId = args.ownerId || null;
     this.unit_name = args.unit_name || null;
+    this.objectId = args.objectId || null;
     this.created = args.created || null;
-    this.updated = args.updated || null;
 
     this._private_relations = [];
     this._private_geoRelations = [];
     this._private_dates = [
-    "created",
-    "updated"];
+    "updated",
+    "created"];
     this.___class = "MeasureUnits";
 
 

@@ -46,7 +46,7 @@
       }
 
       navigator.notification.prompt(
-          'Inserisci il nome della lista',
+          'Inserisci il nome della lista. Quando la lista sarà pubblicata, questo nome sarà visibile anche agli altri utenti.',
           onPrompt,
           'Nuova lista',
           ['Ok', 'Cancel'],
@@ -82,7 +82,7 @@
         $scope.userinput = {};
         console.log("user updated, list added");
         console.log(saved_user);
-        current_user.lists = saved_user.lists;
+        current_user = saved_user;
         $rootScope.lists = current_user.lists;
         $scope.goto_list(current_user.lists[current_user.lists.length - 1].objectId);
       }
@@ -335,6 +335,7 @@
       for (var i = 0; i < $rootScope.list.delivery_addresses.length; i++) {
         $rootScope.list.delivery_addresses[i].metadata = add_list_to_geopoint_metadata($rootScope.list.delivery_addresses[i].metadata, $rootScope.list);
       }
+      //var public_list = new 
       $rootScope.list = backendlessify_shopping_list($rootScope.list);
       $rootScope.list.save(new Backendless.Async(listUpdated, onError));
     }

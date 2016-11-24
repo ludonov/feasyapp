@@ -24,6 +24,18 @@ function backendlessify_user(not_backendless_obj) {
       new_usr.accepted_lists.push(backendlessify_shopping_list(list));
     });
 
+  new_usr.bidden_lists = [];
+  if (not_backendless_obj.bidden_lists != null)
+    not_backendless_obj.bidden_lists.forEach(function (list) {
+      new_usr.bidden_lists.push(backendlessify_shopping_list(list));
+    });
+
+  new_usr.candidatures = [];
+  if (not_backendless_obj.candidatures != null)
+    not_backendless_obj.candidatures.forEach(function (candidate) {
+      new_usr.candidatures.push(backendlessify_candidate_info(candidate));
+    });
+
   // new_usr.addresses = [];
   // if (not_backendless_obj.addresses != null)
   //   not_backendless_obj.addresses.forEach(function (address) {
@@ -80,6 +92,17 @@ function backendlessify_shopping_item(not_backendless_obj) {
   }
   if (new_obj.unit != undefined && new_obj.unit.objectId == undefined) {
     delete new_obj.unit;
+  }
+  cleanPrivateRelations(new_obj);
+  return new_obj;
+}
+
+function backendlessify_candidate_info(not_backendless_obj) {
+  not_backendless_obj = angular.fromJson(angular.toJson(not_backendless_obj))
+  var new_obj = new window.Classes.CandidateInfo();
+  for (var k in not_backendless_obj) {
+    //if (!k.startsWith("_") || k == "___class")
+    new_obj[k] = not_backendless_obj[k];
   }
   cleanPrivateRelations(new_obj);
   return new_obj;
@@ -399,14 +422,14 @@ var add_list_to_geopoint_metadata = function (geopoint_metadata, list) {
   //if (geopoint_metadata.list == null)
   //  geopoint_metadata.list = {};
   for (var property in list) {
-    if (list.hasOwnProperty(property) && (typeof list[property]) != 'function' && (!property.startsWith("_")) && !property.startsWith("$") && property != "chosen_candidate" && property != "candidates" && property != "delivery_addresses" && property != "created" && property != "updated") {
+    if (list.hasOwnProperty(property) && (typeof list[property]) != 'function' && (!property.startsWith("_")) && !property.startsWith("$") && property != "chosen_candidate" && property != "candidates" && property != "delivery_addresses" && property != "created" && property != "updated" && property != "active" && property != "objectId") {
       if (property == "items") {
         geopoint_metadata.items = [];
         for (var i = 0; i < list.items.length; i++) {
           var item = list.items[i];
           var new_item = {};
           for (var item_property in item) {
-            if (item.hasOwnProperty(item_property) && (typeof item[item_property]) != 'function' && (!item_property.startsWith("_") || item_property == "___class") && !item_property.startsWith("$") && item_property != "created" && item_property != "updated" && item_property != "ownerId") {
+            if (item.hasOwnProperty(item_property) && (typeof item[item_property]) != 'function' && (!item_property.startsWith("_") || item_property == "___class") && !item_property.startsWith("$") && item_property != "created" && item_property != "updated" && item_property != "ownerId" && item_property != "objectId") {
               if (item_property == "unit") {
                 if (item["unit"] != null) {
                   new_item["unit"] = item["unit"];

@@ -1,5 +1,5 @@
 <ion-view title="Nome lista" id="page10" class="background-color-body">
-    <ion-nav-title class="title-custom">Info lista</ion-nav-title>
+    <ion-nav-title class="title-custom">{{list.name}}</ion-nav-title>
 
     <ion-scroll direction="y" style="right:0; bottom:0; left:0; position:absolute;" class="has-header has-tabs" class="background-color-body">
       <div class="list">
@@ -59,7 +59,7 @@
           Lista prodotti
           <i class="icon ion-ios-arrow-right" style="color:#8c8c8c"></i>
         </a>
-        <a class="item item-icon-left" ui-sref="Chat" ng-show="confirmed">
+        <a class="item item-icon-left" ui-sref="Chat">
           <i class="icon ion-ios-chatbubble-outline SF-regular"></i>
           Chat
         </a>
