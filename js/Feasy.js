@@ -9,7 +9,7 @@ Backendless.initApp(APPLICATION_ID, SECRET_KEY, VERSION);
 var $rootScope = window;
 
 
-function cleanPrivateRelations(data) {
+function cleanPrivateRelations(data) {  
   function isObject(obj) {
     return obj !== null && typeof obj === 'object';
   }
