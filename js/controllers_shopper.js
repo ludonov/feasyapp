@@ -78,11 +78,11 @@
     var infoWindow = new google.maps.InfoWindow();
 
     var add_marker = function (_lat, _lng, geopoint, permanent) {
-
+      var myIcon = new google.maps.MarkerImage('images/map_marker.png', null, null, null, new google.maps.Size(21,30));
       var marker = new google.maps.Marker({
         map: map,
         //animation: google.maps.Animation.DROP,
-        icon: 'images/map_marker.png',
+        icon: myIcon,
         position: new google.maps.LatLng(_lat, _lng)
       });
 
@@ -101,11 +101,11 @@
     }
 
     var add_marker_position = function (myLat, myLong, text, permanent) {
-
+      var myIcon = new google.maps.MarkerImage('images/map_marker_circle.png', null, null, null, new google.maps.Size(21,30));
       var marker = new google.maps.Marker({
         map: map,
         //animation: google.maps.Animation.DROP,
-        icon: 'images/map_marker_circle.png',
+        icon: myIcon,
         zIndex:99999999,
         position: new google.maps.LatLng(myLat, myLong)
       });
