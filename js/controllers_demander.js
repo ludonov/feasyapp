@@ -334,6 +334,9 @@
       $rootScope.list.updated = new Date();
       for (var i = 0; i < $rootScope.list.delivery_addresses.length; i++) {
         $rootScope.list.delivery_addresses[i].metadata = add_list_to_geopoint_metadata($rootScope.list.delivery_addresses[i].metadata, $rootScope.list);
+        $rootScope.list.delivery_addresses[i].metadata.author_first_name = current_user.first_name;
+        $rootScope.list.delivery_addresses[i].metadata.author_last_name = current_user.last_name;
+        $rootScope.list.delivery_addresses[i].metadata.ownerId = current_user.objectId;
       }
       //var public_list = new 
       $rootScope.list = backendlessify_shopping_list($rootScope.list);

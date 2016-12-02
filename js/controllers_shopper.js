@@ -60,6 +60,7 @@
 
     $scope.open_list = function (geopointId) {
       $rootScope.shopper_list = markers[geopointId].geo_metadata;
+      $rootScope.shopper_list.geopoint_id = geopointId;
       $state.go("tabsController.ShopperListView", { confirmed: false });
     }
 
@@ -166,6 +167,7 @@
       var ne = bounds.getNorthEast();
       var sw = bounds.getSouthWest();
       //console.log("New bounds: (" + ne.lat() + " - " + ne.lng() + ") - (" + sw.lat() + " - " + sw.lng() + ")");
+      //condition: "objectId = '1C98DB3E-1968-8124-FFB9-82F23B079100'",
       var geoQuery = {
         searchRectangle: [ne.lat(), sw.lng(), sw.lat(), ne.lng()],
         categories: ["lists"],
@@ -224,8 +226,8 @@
   .controller('MyListsToDoCtrl', function ($scope, $rootScope, $state, UserService, DataExchange, $ionicModal, $ionicActionSheet, $ionicLoading, $ionicHistory) {
     
     $scope.$on("$ionicView.enter", function (event, data) {
-      $scope.accepted_lists = current_user.accepted_lists;
-      $scope.bidden_lists = current_user.bidden_lists;
+      $scope.candidatures = current_user.candidatures;
+      $scope.accepted_candidatures = current_user.accepted_candidatures;
     });
 
     $scope.goto_map = function () {
@@ -236,7 +238,17 @@
       $state.go("tabsController.FindListOnMap");
     }
 
-    $scope.view_bidden_list = function (list) {
+    $scope.view_candidature = function (candy) {
+      $ionicLoading.show({
+        content: 'Please wait...',
+        showBackdrop: false
+      });
+      Backendless.Geo.findById(geoQuery, new Backendless.Async(onGeoFind, onGeoError))
+      $rootScope.shopper_list = list;
+      $state.go("tabsController.ShopperListView", { confirmed: false });
+    }
+
+    $scope.view_confirmed_candidature = function (candy) {
       $rootScope.shopper_list = list;
       $state.go("tabsController.ShopperListView", { confirmed: false });
     }
@@ -268,7 +280,9 @@
         "rating": current_user.rating,
         "accomplished_tasks": current_user.accomplished_tasks,
         "requested_tasks": current_user.requested_tasks,
-        "list_id": $scope.list.objectId
+        "author_first_name": $scope.list.author_first_name,
+        "author_last_name": $scope.list.author_last_name,
+        "geopoint_id": $scope.list.geopoint_id
       });
 
       $ionicLoading.show({
@@ -281,15 +295,16 @@
     }
 
     var candySaved = function (saved_candy) {
-      var temp_usr = angular.copy(current_user);
-      if (temp_usr.bidden_lists == null)
-        temp_usr.bidden_lists = [];
-      temp_usr.bidden_lists.push(new window.Classes.ShoppingList({ "objectId": $scope.list.objectId, "ownerId": $scope.list.ownerId }));
-      if (temp_usr.candidatures == null)
-        temp_usr.candidatures = [];
-      temp_usr.candidatures.push(saved_candy);
-      var temp_usr = backendlessify_user(temp_usr);
-      Backendless.UserService.update(temp_usr, new Backendless.Async(userUpdated, onError));
+      $ionicLoading.hide();
+      //var temp_usr = angular.copy(current_user);
+      //if (temp_usr.bidden_lists == null)
+      //  temp_usr.bidden_lists = [];
+      //temp_usr.bidden_lists.push(new window.Classes.ShoppingList({ "objectId": $scope.list.objectId, "ownerId": $scope.list.ownerId }));
+      //if (temp_usr.candidatures == null)
+      //  temp_usr.candidatures = [];
+      //temp_usr.candidatures.push(saved_candy);
+      //var temp_usr = backendlessify_user(temp_usr);
+      //Backendless.UserService.update(temp_usr, new Backendless.Async(userUpdated, onError));
     }
 
     var candyError = function (err) {

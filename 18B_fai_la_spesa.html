@@ -22,20 +22,20 @@
         <br>
         CONFERMATE
       </div>
-      <h5 class="SF-thin center" ng-show="accepted_lists.length == 0">NESSUNA LISTA CONFERMATA</h5>
-      <a class="item item-field" ng-repeat="list in accepted_lists" ng-click="view_confirmed_list(list)">
-        Lista {{list.name}}
-        <span class="item-note item-content">{{list.items.length}} pezzi</span>
+      <h5 class="SF-thin center" ng-show="accepted_candidatures.length == 0">NESSUNA LISTA CONFERMATA</h5>
+      <a class="item item-field" ng-repeat="candidature in accepted_candidatures" ng-click="view_confirmed_candidature(candidature)">
+        Lista {{candidature.list_name}}
+        <span class="item-note item-content">da: {{list.list_author_name}}</span>
       </a>
 
       <div class="item item-divider item-title background-color-list-item-divider">
         <br>
         PROPOSTE
       </div>
-      <h5 class="SF-thin center" ng-show="bidden_lists.length == 0">NESSUNA LISTA PROPOSTA</h5>
-      <a class="item item-field" ng-repeat="list in bidden_lists" ng-click="view_bidden_list(list)">
-        Lista {{list.name}}
-        <span class="item-note item-content">{{list.items.length}} pezzi</span>
+      <h5 class="SF-thin center" ng-show="candidatures.length == 0">NESSUNA LISTA PROPOSTA</h5>
+      <a class="item item-field" ng-repeat="candidature in candidatures" ng-click="view_candidature(candidature)">
+        Lista {{candidature.list_name}}
+        <span class="item-note item-content">da: {{list.list_author_name}}</span>
       </a>
     </div>
 

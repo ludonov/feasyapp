@@ -18,22 +18,16 @@ function backendlessify_user(not_backendless_obj) {
       new_usr.lists.push(backendlessify_shopping_list(list));
     });
 
-  new_usr.accepted_lists = [];
-  if (not_backendless_obj.accepted_lists != null)
-    not_backendless_obj.accepted_lists.forEach(function (list) {
-      new_usr.accepted_lists.push(backendlessify_shopping_list(list));
-    });
-
-  new_usr.bidden_lists = [];
-  if (not_backendless_obj.bidden_lists != null)
-    not_backendless_obj.bidden_lists.forEach(function (list) {
-      new_usr.bidden_lists.push(backendlessify_shopping_list(list));
-    });
-
   new_usr.candidatures = [];
   if (not_backendless_obj.candidatures != null)
     not_backendless_obj.candidatures.forEach(function (candidate) {
       new_usr.candidatures.push(backendlessify_candidate_info(candidate));
+    });
+
+  new_usr.accepted_candidatures = [];
+  if (not_backendless_obj.accepted_candidatures != null)
+    not_backendless_obj.accepted_candidatures.forEach(function (candidate) {
+      new_usr.accepted_candidatures.push(backendlessify_candidate_info(candidate));
     });
 
   // new_usr.addresses = [];
